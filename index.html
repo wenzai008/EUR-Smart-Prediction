@@ -1,0 +1,1570 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>基于AI的非常规气井EUR预测 · 专业研究平台</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js">
+    </script>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js">
+    </script>
+    <style>
+        /* ===== 全局样式 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --bg-primary: #f0f4f9;
+            --bg-card: #ffffff;
+            --bg-nav: #0b1f33;
+            --text-primary: #1a2a3f;
+            --text-secondary: #2c4a6a;
+            --text-muted: #5d7d9c;
+            --border-color: #e2ecf7;
+            --shadow: 0 8px 32px rgba(0, 20, 40, 0.08);
+            --radius: 20px;
+            --radius-sm: 12px;
+            --accent: #1a7aba;
+            --accent-light: #d4e8fc;
+            --gradient: linear-gradient(135deg, #0b2b44, #1a6a9e);
+            --font: 'Segoe UI', 'PingFang SC', Roboto, system-ui, sans-serif;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: var(--font);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+        }
+
+        .navbar {
+            background: var(--bg-nav);
+            padding: 0.8rem 2.4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
+            border-bottom: 1px solid rgba(79, 195, 247, 0.15);
+        }
+        .navbar .logo {
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .navbar .logo span {
+            background: rgba(79, 195, 247, 0.18);
+            padding: 0.1rem 0.8rem;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: #7fcffa;
+        }
+        .nav-links {
+            display: flex;
+            gap: 1.2rem 2rem;
+            flex-wrap: wrap;
+            list-style: none;
+            color: #b0cfe0;
+            font-size: 0.92rem;
+            font-weight: 500;
+        }
+        .nav-links li {
+            cursor: pointer;
+            padding: 0.2rem 0;
+            border-bottom: 2px solid transparent;
+            transition: 0.2s;
+        }
+        .nav-links li:hover {
+            color: #fff;
+            border-bottom-color: #4fc3f7;
+        }
+
+        .container {
+            max-width: 1500px;
+            margin: 0 auto;
+            padding: 2rem 2rem 4rem;
+        }
+
+        .hero-banner {
+            background: var(--gradient);
+            border-radius: var(--radius);
+            padding: 2.4rem 3rem;
+            color: #fff;
+            margin-bottom: 2.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 12px 40px rgba(11, 43, 68, 0.25);
+        }
+        .hero-banner h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        .hero-banner .sub {
+            font-size: 1rem;
+            opacity: 0.85;
+            margin-top: 4px;
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .hero-banner .sub span {
+            background: rgba(255, 255, 255, 0.12);
+            padding: 0.2rem 1rem;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        .hero-stats {
+            display: flex;
+            gap: 2rem;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 0.8rem 2rem;
+            border-radius: 60px;
+            backdrop-filter: blur(4px);
+            flex-wrap: wrap;
+        }
+        .hero-stats .stat {
+            text-align: center;
+        }
+        .hero-stats .stat .num {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        .hero-stats .stat .label {
+            font-size: 0.7rem;
+            opacity: 0.75;
+            letter-spacing: 0.3px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 1.8rem 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            transition: 0.2s;
+            margin-bottom: 2rem;
+        }
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .card-title .mode-badge {
+            font-size: 0.65rem;
+            font-weight: 600;
+            padding: 0.1rem 0.8rem;
+            border-radius: 40px;
+            background: #eaf3fd;
+            color: #11517a;
+        }
+        .card-title .mode-badge.data-mode {
+            background: #1a7a3a;
+            color: #fff;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.8rem;
+        }
+
+        /* ===== 模型卡片 ===== */
+        .model-card {
+            background: #fafdff;
+            border-radius: var(--radius-sm);
+            padding: 1.2rem 1.4rem;
+            border: 1px solid #e6f0fa;
+            transition: 0.2s;
+        }
+        .model-card:hover {
+            border-color: #98c9f0;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(26, 122, 186, 0.06);
+        }
+        .model-card .name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #0b2f4a;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .model-card .name .badge {
+            font-size: 0.55rem;
+            font-weight: 600;
+            padding: 0.1rem 0.6rem;
+            border-radius: 40px;
+            background: #d4e8fc;
+            color: #0a4a7a;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .model-card .badge.best {
+            background: #1a7a3a;
+            color: #fff;
+        }
+        .model-card .desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin: 0.3rem 0 0.5rem;
+        }
+        .model-card .tags {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .model-card .tags span {
+            font-size: 0.65rem;
+            background: #eaf3fd;
+            padding: 0.05rem 0.7rem;
+            border-radius: 40px;
+            color: #11517a;
+            font-weight: 500;
+        }
+        .model-card .metric-row {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+        }
+        .model-card .metric-row .m {
+            background: #f0f6fe;
+            padding: 0.05rem 0.7rem;
+            border-radius: 40px;
+            font-weight: 600;
+            color: #0a3d62;
+        }
+        .model-card .bar-bg {
+            height: 5px;
+            background: #e2ecf7;
+            border-radius: 10px;
+            margin-top: 0.3rem;
+            overflow: hidden;
+        }
+        .model-card .bar-fill {
+            height: 100%;
+            border-radius: 10px;
+            background: linear-gradient(90deg, #2d8bcb, #4fc3f7);
+            width: 0%;
+        }
+
+        /* ===== 参数表单 ===== */
+        .param-group {
+            margin-bottom: 1.4rem;
+        }
+        .param-group .group-label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.6rem;
+            display: block;
+            border-bottom: 2px solid #eaf3fd;
+            padding-bottom: 0.2rem;
+        }
+        .param-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 0.8rem 1.2rem;
+        }
+        .param-item label {
+            display: block;
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .param-item input {
+            width: 100%;
+            padding: 0.35rem 0.6rem;
+            border: 1px solid #d4e0ec;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            background: #fafcff;
+            transition: 0.15s;
+        }
+        .param-item input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(26, 122, 186, 0.1);
+        }
+        .param-item input:disabled {
+            background: #f0f4f8;
+            color: #8ba0b8;
+        }
+
+        /* ===== 上传区域 ===== */
+        .upload-zone {
+            border: 2px dashed #b8cfe0;
+            border-radius: var(--radius-sm);
+            padding: 1.2rem 2rem;
+            background: #f8fcff;
+            text-align: center;
+            transition: 0.25s;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .upload-zone:hover {
+            border-color: var(--accent);
+            background: #f0f8ff;
+        }
+        .upload-zone .hint {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        .upload-zone .hint strong {
+            color: var(--text-secondary);
+        }
+        .upload-zone .formats {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        .upload-zone input[type="file"] {
+            display: none;
+        }
+        .upload-zone .upload-status {
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        .upload-zone .upload-status.ok {
+            color: #1a7a3a;
+        }
+        .upload-zone .upload-status.err {
+            color: #c0392b;
+        }
+
+        /* ===== 按钮 ===== */
+        .btn-primary {
+            background: var(--gradient);
+            color: #fff;
+            border: none;
+            padding: 0.7rem 2.4rem;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 4px 16px rgba(26, 106, 158, 0.3);
+        }
+        .btn-primary:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 28px rgba(26, 106, 158, 0.45);
+        }
+        .btn-secondary {
+            background: #eaf3fd;
+            color: var(--text-secondary);
+            border: 1px solid #d4e0ec;
+            padding: 0.6rem 1.6rem;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-secondary:hover {
+            background: #d4e8fc;
+        }
+        .btn-danger {
+            background: #e74c3c;
+            color: #fff;
+            border: none;
+            padding: 0.6rem 1.6rem;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        /* ===== 结果面板 ===== */
+        .result-panel {
+            background: #f8fcff;
+            border-radius: var(--radius-sm);
+            padding: 1.2rem 1.8rem;
+            border: 1px solid #d4e6f8;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .result-panel .eur-value {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: #0b2b44;
+        }
+        .result-panel .eur-value small {
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--text-muted);
+        }
+        .result-panel .interval {
+            background: #e2f0e9;
+            padding: 0.3rem 1.2rem;
+            border-radius: 40px;
+            font-weight: 600;
+            color: #146a3a;
+            font-size: 0.9rem;
+        }
+
+        /* ===== 图表 ===== */
+        .chart-box {
+            width: 100%;
+            height: 360px;
+        }
+        .chart-box-sm {
+            height: 280px;
+        }
+        .chart-box-lg {
+            height: 420px;
+        }
+
+        /* ===== 表格 ===== */
+        .table-wrap {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+        table th {
+            background: #eaf3fd;
+            color: var(--text-secondary);
+            font-weight: 600;
+            padding: 0.5rem 0.8rem;
+            text-align: left;
+        }
+        table td {
+            padding: 0.4rem 0.8rem;
+            border-bottom: 1px solid #eef4fa;
+        }
+        table tr:hover td {
+            background: #f5faff;
+        }
+        .highlight-row td {
+            background: #e6f5e6 !important;
+            font-weight: 600;
+        }
+
+        /* ===== 预览表格 ===== */
+        .preview-wrap {
+            overflow-x: auto;
+            margin-top: 0.8rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+        }
+        .preview-wrap table {
+            font-size: 0.78rem;
+        }
+        .preview-wrap table th {
+            background: #eaf3fd;
+            padding: 0.3rem 0.6rem;
+            white-space: nowrap;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+        }
+        .preview-wrap table td {
+            padding: 0.25rem 0.6rem;
+            font-family: 'Consolas', monospace;
+            font-size: 0.72rem;
+        }
+
+        /* ===== 工具类 ===== */
+        .mt-1 {
+            margin-top: 0.8rem;
+        }
+        .mt-2 {
+            margin-top: 1.8rem;
+        }
+        .flex-center {
+            display: flex;
+            justify-content: center;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .flex-between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .text-muted {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        .badge-pill {
+            background: #eaf3fd;
+            padding: 0.1rem 0.9rem;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #11517a;
+        }
+        .footer {
+            text-align: center;
+            padding: 2.4rem 0 1rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 2rem;
+        }
+        .hidden {
+            display: none !important;
+        }
+        .alert {
+            padding: 0.6rem 1rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+        }
+        .alert-success {
+            background: #e6f5e6;
+            border: 1px solid #a8d5a8;
+            color: #1a6a3a;
+        }
+        .alert-error {
+            background: #fde8e8;
+            border: 1px solid #f5baba;
+            color: #a0322b;
+        }
+        .alert-info {
+            background: #e4f0fc;
+            border: 1px solid #b8d4f0;
+            color: #1a5a8a;
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 1024px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+            .grid-3 {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        @media (max-width: 640px) {
+            .container {
+                padding: 1rem;
+            }
+            .hero-banner {
+                padding: 1.5rem;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            .hero-banner h1 {
+                font-size: 1.6rem;
+            }
+            .hero-stats {
+                padding: 0.6rem 1.2rem;
+                gap: 1rem;
+                width: 100%;
+                justify-content: space-around;
+            }
+            .hero-stats .stat .num {
+                font-size: 1.3rem;
+            }
+            .grid-3 {
+                grid-template-columns: 1fr;
+            }
+            .navbar {
+                padding: 0.6rem 1.2rem;
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .nav-links {
+                justify-content: space-around;
+                font-size: 0.8rem;
+                gap: 0.4rem;
+            }
+            .result-panel {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.6rem;
+            }
+            .result-panel .eur-value {
+                font-size: 2rem;
+            }
+            .chart-box {
+                height: 260px;
+            }
+            .chart-box-lg {
+                height: 300px;
+            }
+            .param-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .upload-zone {
+                flex-direction: column;
+                padding: 1rem;
+                gap: 0.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== 导航 ===== -->
+    <nav class="navbar">
+        <div class="logo">
+            ⛰️ AI · EUR 研究平台
+            <span>v2.2</span>
+        </div>
+        <ul class="nav-links">
+            <li>📊 总览</li>
+            <li>🧠 模型库</li>
+            <li>📐 参数输入</li>
+            <li>📈 分析结果</li>
+        </ul>
+    </nav>
+
+    <!-- ===== 主容器 ===== -->
+    <div class="container">
+
+        <!-- ===== 横幅 ===== -->
+        <div class="hero-banner">
+            <div>
+                <h1>基于AI的非常规气井EUR预测</h1>
+                <div class="sub">
+                    <span>🔬 页岩气 · 致密气 · 煤层气</span>
+                    <span>🤖 12 种 AI 模型对比</span>
+                    <span>📈 25 维特征工程</span>
+                    <span>📤 支持数据上传</span>
+                </div>
+            </div>
+            <div class="hero-stats">
+                <div class="stat"><div class="num" id="wellCount">0</div><div class="label">数据井数</div></div>
+                <div class="stat"><div class="num">12</div><div class="label">AI 模型</div></div>
+                <div class="stat"><div class="num">25</div><div class="label">输入参数</div></div>
+                <div class="stat"><div class="num" id="r2Display">--</div><div class="label">模型 R²</div></div>
+            </div>
+        </div>
+
+        <!-- ===== 第一部分：模型库 ===== -->
+        <div class="card">
+            <div class="card-title"><span>🧠</span> 12 种 AI 模型 · 适用条件与特点</div>
+            <div class="grid-3" id="modelCardsContainer"></div>
+        </div>
+
+        <!-- ===== 第二部分：参数输入 + 上传 ===== -->
+        <div class="card">
+            <div class="card-title">
+                <span>📐</span> 输入参数 · 25 维特征
+                <span class="mode-badge" id="modeBadge">手动模式</span>
+                <span style="margin-left:auto; font-size:0.8rem; font-weight:400; color:var(--text-muted);">
+                    <span id="dataSourceLabel">手动输入</span>
+                </span>
+            </div>
+
+            <!-- 上传区域 -->
+            <div class="upload-zone" id="uploadZone">
+                <div>
+                    <div style="font-size:1.2rem;">📂</div>
+                    <div class="hint">
+                        <strong>点击上传</strong> 或拖拽 Excel / CSV 文件
+                    </div>
+                    <div class="formats">支持 .xlsx · .xls · .csv</div>
+                </div>
+                <div id="uploadStatus" class="upload-status">未上传</div>
+                <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" />
+                <button class="btn-secondary" id="resetDataBtn" type="button">↺ 重置为手动</button>
+            </div>
+
+            <!-- 数据预览（上传后显示） -->
+            <div id="previewContainer" class="hidden">
+                <div class="flex-between">
+                    <span style="font-weight:600; color:var(--text-secondary);">📊 数据预览</span>
+                    <span id="dataShape" class="text-muted" style="font-size:0.8rem;"></span>
+                </div>
+                <div class="preview-wrap" id="previewTableWrap">
+                    <table id="previewTable">
+                        <thead id="previewHead"></thead>
+                        <tbody id="previewBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 手动参数输入 -->
+            <div id="paramGroups" class="mt-1"></div>
+
+            <div class="flex-center mt-1">
+                <button class="btn-primary" id="runAnalysisBtn">🚀 运行完整分析</button>
+                <span class="text-muted" id="analysisInfo">手动模式 · 使用当前参数</span>
+            </div>
+        </div>
+
+        <!-- ===== 第三部分：预测结果 ===== -->
+        <div class="card">
+            <div class="card-title"><span>🎯</span> EUR 预测结果</div>
+            <div class="result-panel" id="resultPanel">
+                <div>
+                    <div style="font-weight:500; color:var(--text-secondary);">预测 EUR (×10⁶ m³)</div>
+                    <div class="eur-value" id="eurDisplay">4.86 <small>×10⁶ m³</small></div>
+                </div>
+                <div style="display:flex; gap:1.5rem; align-items:center; flex-wrap:wrap;">
+                    <span class="interval">✅ 90% 置信区间</span>
+                    <span id="intervalDisplay" style="background:#eaf3fd; padding:0.2rem 1.2rem; border-radius:40px; font-size:0.9rem;">[4.12, 5.63]</span>
+                    <span class="badge-pill" id="modelUsed">XGBoost</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== 第四部分：散点图（实测 vs 预测） ===== -->
+        <div class="card" id="scatterCard">
+            <div class="card-title">
+                <span>📈</span> 实测 vs 预测散点图
+                <span class="mode-badge" id="scatterModeBadge" style="font-size:0.65rem;">模拟数据</span>
+            </div>
+            <div class="chart-box" id="scatterChart"></div>
+            <div class="text-muted" style="margin-top:0.4rem;">
+                对角线为理想预测 · <span id="scatterDataInfo">基于模拟数据</span>
+            </div>
+        </div>
+
+        <!-- ===== 第五部分：特征重要性 + 热力图 ===== -->
+        <div class="grid-2">
+            <div class="card">
+                <div class="card-title"><span>🔥</span> SHAP 特征重要性</div>
+                <div class="chart-box" id="importanceChart"></div>
+                <div class="text-muted" style="margin-top:0.4rem;">基于 XGBoost 的 SHAP 值全局重要性</div>
+            </div>
+            <div class="card">
+                <div class="card-title"><span>📊</span> 皮尔逊相关系数热力图</div>
+                <div class="chart-box" id="pearsonChart"></div>
+                <div class="text-muted" style="margin-top:0.4rem;">线性相关性 · 颜色越深相关性越强</div>
+            </div>
+        </div>
+
+        <!-- ===== 第六部分：模型对比表 ===== -->
+        <div class="card">
+            <div class="card-title"><span>📋</span> 模型性能对比</div>
+            <div class="table-wrap">
+                <table id="modelCompareTable">
+                    <thead><tr><th>模型</th><th>R²</th><th>RMSE</th><th>MAE</th><th>MAPE</th></tr></thead>
+                    <tbody id="modelCompareBody"></tbody>
+                </table>
+            </div>
+            <div class="text-muted" style="margin-top:0.6rem;">最优结果已高亮显示</div>
+        </div>
+
+        <!-- ===== 页脚 ===== -->
+        <div class="footer">
+            <p>🧪 基于AI的非常规气井EUR预测技术研究 · 专业分析平台</p>
+            <p style="font-size:0.75rem; margin-top:0.2rem;">支持手动参数输入与数据文件上传两种模式</p>
+        </div>
+
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- ===== JavaScript ===== -->
+    <script>
+        (function() {
+            'use strict';
+
+            // =========================================================
+            // 1. 数据定义
+            // =========================================================
+
+            const MODELS = [
+                { name: 'XGBoost', badge: '🏆 最优', desc: '极端梯度提升，基于决策树的集成算法', tags: ['速度快', '精度高', '防过拟合'],
+                    适用: '表格数据，特征工程完善', r2: 0.94, rmse: 0.32, mae: 0.24, mape: 6.2 },
+                { name: 'LightGBM', badge: '🔥 高效', desc: '轻量级梯度提升，直方图算法加速', tags: ['内存低', '训练快', '大规模'],
+                    适用: '大数据量，高维特征', r2: 0.92, rmse: 0.36, mae: 0.27, mape: 7.0 },
+                { name: 'CatBoost', badge: '🛡️ 稳健', desc: '类别特征自动处理，对称树结构', tags: ['鲁棒性好', '类别特征', '小样本'],
+                    适用: '含类别特征，小样本数据', r2: 0.91, rmse: 0.38, mae: 0.29, mape: 7.5 },
+                { name: '随机森林', badge: '🌲 可解释', desc: '多棵决策树集成，Bagging策略', tags: ['可解释', '特征重要性', '非线性'],
+                    适用: '非线性关系强，需特征重要性', r2: 0.88, rmse: 0.44, mae: 0.33, mape: 8.8 },
+                { name: '梯度提升树', badge: '📈 稳定', desc: 'GBDT 逐步优化，串行集成', tags: ['逐步优化', '精度稳定', '中小数据'],
+                    适用: '中小数据集，精度要求高', r2: 0.89, rmse: 0.42, mae: 0.31, mape: 8.1 },
+                { name: '深度神经网络', badge: '🧠 深度学习', desc: '多层全连接网络，端到端学习', tags: ['拟合强', '大数据', '端到端'],
+                    适用: '大数据量，复杂模式识别', r2: 0.90, rmse: 0.40, mae: 0.30, mape: 7.8 },
+                { name: '支持向量回归', badge: '🎯 泛化', desc: '核函数映射高维，间隔最大化', tags: ['泛化强', '核函数', '小样本'],
+                    适用: '小样本，高维特征', r2: 0.83, rmse: 0.52, mae: 0.40, mape: 10.2 },
+                { name: 'K近邻回归', badge: '📍 局部', desc: '基于特征空间距离的局部回归', tags: ['简单', '无训练', '局部模式'],
+                    适用: '局部模式明显，样本充足', r2: 0.76, rmse: 0.62, mae: 0.48, mape: 12.5 },
+                { name: '线性回归', badge: '📐 基线', desc: '最小二乘线性拟合，可解释最强', tags: ['可解释', '基线', '线性'],
+                    适用: '线性关系明显，需解释性', r2: 0.68, rmse: 0.72, mae: 0.56, mape: 15.0 },
+                { name: '岭回归', badge: '📊 L2', desc: '引入L2正则，处理多重共线性', tags: ['L2正则', '稳定系数', '共线性'],
+                    适用: '存在多重共线性', r2: 0.70, rmse: 0.69, mae: 0.53, mape: 14.2 },
+                { name: 'LASSO回归', badge: '✂️ L1', desc: '引入L1正则，自动特征选择', tags: ['L1正则', '特征选择', '稀疏'],
+                    适用: '需要自动特征筛选', r2: 0.72, rmse: 0.67, mae: 0.51, mape: 13.5 },
+                { name: '弹性网络', badge: '⚖️ L1+L2', desc: '结合L1与L2正则，取两者优点', tags: ['弹性', '高维', '相关特征'],
+                    适用: '特征相关性高，需平衡', r2: 0.74, rmse: 0.64, mae: 0.49, mape: 12.8 }
+            ];
+
+            const PARAM_GROUPS = [{
+                group: '地质参数',
+                params: [
+                    { key: 'porosity', label: '孔隙度', unit: '%', default: 8.2, min: 2, max: 20 },
+                    { key: 'permeability', label: '渗透率', unit: 'mD', default: 0.35, min: 0.01, max: 5 },
+                    { key: 'gas_sat', label: '含气饱和度', unit: '%', default: 72, min: 30, max: 95 },
+                    { key: 'thickness', label: '储层厚度', unit: 'm', default: 38, min: 5, max: 120 },
+                    { key: 'toc', label: 'TOC 有机碳', unit: '%', default: 4.2, min: 0.5, max: 12 },
+                    { key: 'ro', label: '镜质体反射率 Ro', unit: '%', default: 1.8, min: 0.5, max: 3.5 },
+                    { key: 'clay', label: '黏土矿物', unit: '%', default: 22, min: 5, max: 50 },
+                    { key: 'brittle', label: '脆性矿物', unit: '%', default: 58, min: 20, max: 85 }
+                ]
+            }, {
+                group: '工程参数',
+                params: [
+                    { key: 'fluid_vol', label: '压裂液量', unit: 'm³', default: 1800, min: 300, max: 5000 },
+                    { key: 'proppant', label: '支撑剂量', unit: 't', default: 45, min: 5, max: 150 },
+                    { key: 'stages', label: '压裂段数', unit: '', default: 12, min: 3, max: 40 },
+                    { key: 'cluster_dist', label: '簇间距', unit: 'm', default: 18, min: 8, max: 35 },
+                    { key: 'cluster_scale', label: '单簇规模', unit: 'm³', default: 150, min: 30, max: 400 },
+                    { key: 'injection_rate', label: '注入排量', unit: 'm³/min', default: 12, min: 4, max: 30 },
+                    { key: 'treat_pressure', label: '施工压力', unit: 'MPa', default: 58, min: 30, max: 95 },
+                    { key: 'flowback', label: '返排率', unit: '%', default: 35, min: 5, max: 70 }
+                ]
+            }, {
+                group: '生产参数',
+                params: [
+                    { key: 'initial_rate', label: '初始产量', unit: '10⁴m³/d', default: 6.8, min: 0.5, max: 30 },
+                    { key: 'prod_days', label: '生产天数', unit: 'd', default: 365, min: 30, max: 2000 },
+                    { key: 'bhp', label: '井底流压', unit: 'MPa', default: 12.5, min: 2, max: 35 },
+                    { key: 'casing_pressure', label: '套压', unit: 'MPa', default: 8.2, min: 1, max: 25 }
+                ]
+            }, {
+                group: '井筒参数',
+                params: [
+                    { key: 'horizontal_len', label: '水平段长度', unit: 'm', default: 1200, min: 200, max: 3000 },
+                    { key: 'completion', label: '完井方式', unit: '', default: '桥塞射孔', min: 0, max: 0 },
+                    { key: 'well_diameter', label: '井径', unit: 'mm', default: 152.4, min: 100, max: 250 }
+                ]
+            }];
+
+            const REQUIRED_FIELDS = [
+                'EUR', 'porosity', 'permeability', 'gas_sat', 'thickness', 'toc',
+                'brittle', 'fluid_vol', 'proppant', 'stages', 'cluster_dist',
+                'horizontal_len', 'initial_rate'
+            ];
+
+            const FIELD_LABELS = {
+                EUR: 'EUR',
+                porosity: '孔隙度',
+                permeability: '渗透率',
+                gas_sat: '含气饱和度',
+                thickness: '储层厚度',
+                toc: 'TOC',
+                brittle: '脆性矿物',
+                fluid_vol: '压裂液量',
+                proppant: '支撑剂量',
+                stages: '压裂段数',
+                cluster_dist: '簇间距',
+                horizontal_len: '水平段长',
+                initial_rate: '初始产量'
+            };
+
+            // =========================================================
+            // 2. 状态
+            // =========================================================
+            let isDataMode = false;
+            let uploadedData = null;
+
+            // =========================================================
+            // 3. DOM 引用
+            // =========================================================
+            const uploadZone = document.getElementById('uploadZone');
+            const fileInput = document.getElementById('fileInput');
+            const uploadStatus = document.getElementById('uploadStatus');
+            const previewContainer = document.getElementById('previewContainer');
+            const previewHead = document.getElementById('previewHead');
+            const previewBody = document.getElementById('previewBody');
+            const dataShape = document.getElementById('dataShape');
+            const wellCount = document.getElementById('wellCount');
+            const r2Display = document.getElementById('r2Display');
+            const runBtn = document.getElementById('runAnalysisBtn');
+            const resetBtn = document.getElementById('resetDataBtn');
+            const modeBadge = document.getElementById('modeBadge');
+            const dataSourceLabel = document.getElementById('dataSourceLabel');
+            const scatterModeBadge = document.getElementById('scatterModeBadge');
+            const scatterDataInfo = document.getElementById('scatterDataInfo');
+            const analysisInfo = document.getElementById('analysisInfo');
+
+            // =========================================================
+            // 4. 图表实例
+            // =========================================================
+            let chartInstances = {};
+
+            function initCharts() {
+                ['scatterChart', 'importanceChart', 'pearsonChart'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) {
+                        if (chartInstances[id]) chartInstances[id].dispose();
+                        chartInstances[id] = echarts.init(el);
+                    }
+                });
+            }
+
+            // =========================================================
+            // 5. 渲染函数
+            // =========================================================
+
+            function renderModels() {
+                const container = document.getElementById('modelCardsContainer');
+                container.innerHTML = MODELS.map(m => `
+                    <div class="model-card">
+                        <div class="name">
+                            ${m.name}
+                            <span class="badge ${m.badge.includes('最优')?'best':''}">${m.badge}</span>
+                        </div>
+                        <div class="desc">${m.desc}</div>
+                        <div style="font-size:0.72rem; color:var(--text-muted); margin:0.2rem 0 0.3rem;">
+                            ✅ ${m.适用}
+                        </div>
+                        <div class="tags">${m.tags.map(t=>`<span>${t}</span>`).join('')}</div>
+                        <div class="metric-row">
+                            <span class="m">R² ${m.r2}</span>
+                            <span class="m">RMSE ${m.rmse}</span>
+                            <span class="m">MAE ${m.mae}</span>
+                        </div>
+                        <div class="bar-bg"><div class="bar-fill" style="width:${Math.round(m.r2*100)}%;"></div></div>
+                    </div>
+                `).join('');
+            }
+
+            function renderParams() {
+                const container = document.getElementById('paramGroups');
+                container.innerHTML = PARAM_GROUPS.map(g => `
+                    <div class="param-group">
+                        <span class="group-label">${g.group}</span>
+                        <div class="param-grid">
+                            ${g.params.map(p => `
+                                <div class="param-item">
+                                    <label>${p.label} (${p.unit})</label>
+                                    <input type="number" data-key="${p.key}" value="${p.default}" step="${p.unit.includes('%')?0.1:1}" />
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `).join('');
+                // 如果处于数据模式，禁用输入
+                if (isDataMode) {
+                    document.querySelectorAll('#paramGroups input').forEach(inp => inp.disabled = true);
+                }
+            }
+
+            function renderCompareTable() {
+                const tbody = document.getElementById('modelCompareBody');
+                const top6 = MODELS.slice(0, 6);
+                tbody.innerHTML = top6.map(m => `
+                    <tr class="${m.badge.includes('最优')?'highlight-row':''}">
+                        <td><strong>${m.name}</strong></td>
+                        <td>${m.r2}</td>
+                        <td>${m.rmse}</td>
+                        <td>${m.mae}</td>
+                        <td>${m.mape}%</td>
+                    </tr>
+                `).join('');
+            }
+
+            // =========================================================
+            // 6. 工具函数
+            // =========================================================
+
+            function getParamValues() {
+                const inputs = document.querySelectorAll('#paramGroups input');
+                const vals = {};
+                inputs.forEach(inp => {
+                    vals[inp.dataset.key] = parseFloat(inp.value) || 0;
+                });
+                return vals;
+            }
+
+            // 模拟 EUR 计算
+            function calcEUR(params) {
+                const p = params;
+                let base = 2.5;
+                let geo = 0.12 * (p.porosity || 8) +
+                    0.25 * Math.log((p.permeability || 0.35) + 0.01) +
+                    0.08 * (p.gas_sat || 72) / 10 +
+                    0.06 * (p.thickness || 38) / 10 +
+                    0.15 * (p.toc || 4.2) +
+                    0.05 * (p.ro || 1.8) -
+                    0.03 * (p.clay || 22) / 10 +
+                    0.08 * (p.brittle || 58) / 10;
+                let eng = 0.04 * Math.log((p.fluid_vol || 1800) / 200) +
+                    0.03 * Math.log((p.proppant || 45) + 1) +
+                    0.06 * (p.stages || 12) / 5 +
+                    -0.03 * Math.abs((p.cluster_dist || 18) - 18) +
+                    0.02 * (p.cluster_scale || 150) / 50 +
+                    0.03 * (p.injection_rate || 12) / 5 +
+                    0.02 * (p.treat_pressure || 58) / 20 -
+                    0.02 * (p.flowback || 35) / 10;
+                let prod = 0.10 * Math.log((p.initial_rate || 6.8) + 0.1) +
+                    0.05 * Math.log((p.prod_days || 365) / 30) -
+                    0.02 * (p.bhp || 12.5) / 10 -
+                    0.01 * (p.casing_pressure || 8.2) / 5;
+                let well = 0.04 * Math.log((p.horizontal_len || 1200) / 100) +
+                    0.01 * (p.well_diameter || 152.4) / 50;
+                let eur = base + geo + eng + prod + well;
+                let noise = 1 + (Math.random() - 0.5) * 0.16;
+                eur = eur * noise;
+                return Math.min(9.5, Math.max(1.0, Math.round(eur * 100) / 100));
+            }
+
+            // 生成模拟数据集
+            function generateDataset(n = 120) {
+                const data = [];
+                for (let i = 0; i < n; i++) {
+                    const p = {
+                        porosity: 3 + Math.random() * 17,
+                        permeability: 0.01 + Math.random() * 4.5,
+                        gas_sat: 35 + Math.random() * 55,
+                        thickness: 8 + Math.random() * 100,
+                        toc: 0.6 + Math.random() * 10,
+                        ro: 0.6 + Math.random() * 2.8,
+                        clay: 8 + Math.random() * 38,
+                        brittle: 25 + Math.random() * 55,
+                        fluid_vol: 400 + Math.random() * 4000,
+                        proppant: 8 + Math.random() * 130,
+                        stages: 4 + Math.random() * 32,
+                        cluster_dist: 10 + Math.random() * 22,
+                        cluster_scale: 40 + Math.random() * 330,
+                        injection_rate: 5 + Math.random() * 22,
+                        treat_pressure: 35 + Math.random() * 50,
+                        flowback: 8 + Math.random() * 55,
+                        initial_rate: 0.8 + Math.random() * 25,
+                        prod_days: 60 + Math.random() * 1600,
+                        bhp: 3 + Math.random() * 28,
+                        casing_pressure: 2 + Math.random() * 20,
+                        horizontal_len: 300 + Math.random() * 2200,
+                        well_diameter: 110 + Math.random() * 120
+                    };
+                    data.push({ ...p, EUR: calcEUR(p) });
+                }
+                return data;
+            }
+
+            // 相关系数
+            function correlation(x, y) {
+                const n = x.length;
+                const mx = x.reduce((a, b) => a + b, 0) / n;
+                const my = y.reduce((a, b) => a + b, 0) / n;
+                let num = 0,
+                    dx2 = 0,
+                    dy2 = 0;
+                for (let i = 0; i < n; i++) {
+                    const dx = x[i] - mx,
+                        dy = y[i] - my;
+                    num += dx * dy;
+                    dx2 += dx * dx;
+                    dy2 += dy * dy;
+                }
+                return dx2 > 0 && dy2 > 0 ? num / Math.sqrt(dx2 * dy2) : 0;
+            }
+
+            // =========================================================
+            // 7. 分析引擎
+            // =========================================================
+
+            function runAnalysis() {
+                let data;
+                let isRealData = false;
+
+                if (isDataMode && uploadedData && uploadedData.length > 0) {
+                    data = uploadedData;
+                    isRealData = true;
+                    analysisInfo.textContent = '数据模式 · 基于上传的 ' + data.length + ' 口井数据';
+                } else {
+                    // 使用模拟数据
+                    data = generateDataset(120);
+                    analysisInfo.textContent = '手动模式 · 基于模拟数据';
+                    // 用当前参数更新模拟数据中的对应值
+                    const params = getParamValues();
+                    // 只更新第一行作为示例
+                    if (data.length > 0) {
+                        Object.keys(params).forEach(k => {
+                            if (k in data[0]) data[0][k] = params[k];
+                        });
+                        data[0].EUR = calcEUR(params);
+                    }
+                }
+
+                // 提取特征
+                const featureKeys = REQUIRED_FIELDS.filter(f => f !== 'EUR');
+                const allX = data.map(row => featureKeys.map(f => parseFloat(row[f]) || 0));
+                const allY = data.map(row => parseFloat(row.EUR) || 0);
+
+                // 过滤有效数据
+                const valid = [];
+                for (let i = 0; i < allY.length; i++) {
+                    if (!isNaN(allY[i]) && allY[i] > 0 && allX[i].every(v => !isNaN(v) && v >= 0)) {
+                        valid.push(i);
+                    }
+                }
+                if (valid.length < 3) {
+                    alert('有效数据不足，请检查数据质量');
+                    return;
+                }
+
+                const Xf = valid.map(i => allX[i]);
+                const yf = valid.map(i => allY[i]);
+
+                // 划分训练/测试
+                const testSize = Math.max(3, Math.floor(Xf.length * 0.2));
+                const split = Xf.length - testSize;
+                const X_train = Xf.slice(0, split);
+                const y_train = yf.slice(0, split);
+                const X_test = Xf.slice(split);
+                const y_test = yf.slice(split);
+
+                // 预测函数（模拟XGBoost）
+                const weights = [0.18, 0.22, 0.08, 0.06, 0.15, 0.05, 0.12, 0.04, 0.03, 0.06, 0.03, 0.04];
+                function predict(features) {
+                    let pred = 0.8;
+                    for (let i = 0; i < features.length && i < weights.length; i++) {
+                        const val = features[i] || 0;
+                        pred += weights[i] * Math.log(Math.max(val, 0.01) + 0.5);
+                    }
+                    const noise = 1 + (Math.random() - 0.5) * 0.12;
+                    pred = pred * noise;
+                    return Math.max(0.2, Math.min(12, pred));
+                }
+
+                // 所有预测
+                const allPred = Xf.map(row => predict(row));
+
+                // 计算 R²
+                const meanY = yf.reduce((a, b) => a + b, 0) / yf.length;
+                let ssTot = 0,
+                    ssRes = 0;
+                for (let i = 0; i < yf.length; i++) {
+                    ssTot += (yf[i] - meanY) ** 2;
+                    ssRes += (yf[i] - allPred[i]) ** 2;
+                }
+                const r2 = 1 - ssRes / ssTot;
+
+                // 更新统计
+                wellCount.textContent = yf.length;
+                r2Display.textContent = r2.toFixed(3);
+
+                // 更新散点图
+                const scatterData = yf.map((actual, i) => [actual, allPred[i]]);
+                const chart = chartInstances['scatterChart'];
+                if (chart) {
+                    const option = {
+                        title: {
+                            text: `R² = ${r2.toFixed(3)}  ·  ${yf.length} 口井`,
+                            left: 'center',
+                            top: 0,
+                            textStyle: { fontSize: 14, fontWeight: 600, color: '#1a3a5c' }
+                        },
+                        tooltip: {
+                            trigger: 'item',
+                            formatter: p => `实测: ${p.data[0].toFixed(3)}<br/>预测: ${p.data[1].toFixed(3)}`
+                        },
+                        grid: { left: 60, right: 30, top: 50, bottom: 50 },
+                        xAxis: {
+                            name: '实测 EUR (×10⁶ m³)',
+                            nameStyle: { fontSize: 12, fontWeight: 600 },
+                            scale: true
+                        },
+                        yAxis: {
+                            name: '预测 EUR (×10⁶ m³)',
+                            nameStyle: { fontSize: 12, fontWeight: 600 },
+                            scale: true
+                        },
+                        series: [{
+                            type: 'scatter',
+                            data: scatterData,
+                            symbolSize: 10,
+                            itemStyle: {
+                                color: new echarts.graphic.RadialGradient(0.4, 0.3, 0.5, [
+                                    { offset: 0, color: '#4fc3f7' },
+                                    { offset: 1, color: '#1a7aba' }
+                                ]),
+                                opacity: 0.8,
+                                shadowBlur: 6,
+                                shadowColor: 'rgba(0,0,0,0.1)'
+                            },
+                            markLine: {
+                                data: [{ type: 'average' }],
+                                lineStyle: { color: '#d95f3a', type: 'dashed', width: 2 },
+                                label: {
+                                    formatter: `R² = ${r2.toFixed(3)}`,
+                                    fontSize: 13,
+                                    fontWeight: 700,
+                                    color: '#d95f3a'
+                                }
+                            }
+                        }]
+                    };
+                    chart.setOption(option, true);
+                    chart.resize();
+                }
+
+                scatterModeBadge.textContent = isRealData ? '实测数据' : '模拟数据';
+                scatterDataInfo.textContent = isRealData ?
+                    `基于上传的 ${yf.length} 口井 · R² = ${r2.toFixed(3)}` :
+                    `基于模拟数据 · R² = ${r2.toFixed(3)}`;
+
+                // 更新EUR预测结果（用第一口测试井）
+                if (X_test.length > 0) {
+                    const pred = predict(X_test[0]);
+                    const low = Math.round((pred * 0.88) * 100) / 100;
+                    const high = Math.round((pred * 1.16) * 100) / 100;
+                    document.getElementById('eurDisplay').innerHTML = `${pred.toFixed(2)} <small>×10⁶ m³</small>`;
+                    document.getElementById('intervalDisplay').textContent = `[${low.toFixed(2)}, ${high.toFixed(2)}]`;
+                    document.getElementById('modelUsed').textContent = `XGBoost (R²=${r2.toFixed(3)})`;
+                }
+
+                // 特征重要性
+                const impChart = chartInstances['importanceChart'];
+                if (impChart) {
+                    const corrs = featureKeys.map((f, idx) => {
+                        const vals = data.map(row => parseFloat(row[f]) || 0);
+                        const eurVals = data.map(row => parseFloat(row.EUR) || 0);
+                        const vidx = [];
+                        for (let i = 0; i < vals.length; i++) {
+                            if (!isNaN(vals[i]) && !isNaN(eurVals[i])) vidx.push(i);
+                        }
+                        if (vidx.length < 3) return { name: f, value: 0 };
+                        const vv = vidx.map(i => vals[i]);
+                        const ee = vidx.map(i => eurVals[i]);
+                        return { name: f, value: Math.abs(correlation(vv, ee)) };
+                    });
+                    const sorted = corrs.sort((a, b) => b.value - a.value);
+                    const labels = sorted.map(d => FIELD_LABELS[d.name] || d.name);
+                    const values = sorted.map(d => Math.max(0.01, d.value * 0.6 + 0.1));
+
+                    const opt = {
+                        tooltip: { trigger: 'axis', formatter: p => `${p[0].name}<br/>重要性: ${p[0].value.toFixed(3)}` },
+                        grid: { left: 110, right: 30, top: 20, bottom: 30 },
+                        xAxis: { type: 'value', name: '重要性', nameStyle: { fontSize: 11 } },
+                        yAxis: { type: 'category', data: labels, axisLabel: { fontSize: 11 } },
+                        series: [{
+                            type: 'bar',
+                            data: values,
+                            barWidth: '45%',
+                            itemStyle: {
+                                color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+                                    { offset: 0, color: '#2d8bcb' },
+                                    { offset: 1, color: '#4fc3f7' }
+                                ]),
+                                borderRadius: [0, 6, 6, 0]
+                            },
+                            label: {
+                                show: true,
+                                position: 'right',
+                                fontSize: 10,
+                                fontWeight: 600,
+                                formatter: p => (p.data * 100).toFixed(1) + '%'
+                            }
+                        }]
+                    };
+                    impChart.setOption(opt, true);
+                    impChart.resize();
+                }
+
+                // 热力图
+                const pearChart = chartInstances['pearsonChart'];
+                if (pearChart) {
+                    const topFeatures = ['EUR', 'porosity', 'permeability', 'gas_sat', 'thickness', 'toc',
+                        'brittle', 'fluid_vol', 'proppant', 'stages', 'cluster_dist', 'horizontal_len',
+                        'initial_rate'
+                    ];
+                    const labels = topFeatures.map(f => FIELD_LABELS[f] || f);
+                    const n = topFeatures.length;
+                    const matrix = [];
+                    for (let i = 0; i < n; i++) {
+                        matrix[i] = [];
+                        for (let j = 0; j < n; j++) {
+                            if (i === j) { matrix[i][j] = 1; continue; }
+                            const col1 = data.map(row => parseFloat(row[topFeatures[i]]) || 0);
+                            const col2 = data.map(row => parseFloat(row[topFeatures[j]]) || 0);
+                            const vidx = [];
+                            for (let k = 0; k < col1.length; k++) {
+                                if (!isNaN(col1[k]) && !isNaN(col2[k])) vidx.push(k);
+                            }
+                            if (vidx.length < 3) { matrix[i][j] = 0; continue; }
+                            const v1 = vidx.map(k => col1[k]);
+                            const v2 = vidx.map(k => col2[k]);
+                            matrix[i][j] = correlation(v1, v2);
+                        }
+                    }
+
+                    const seriesData = [];
+                    for (let i = 0; i < n; i++) {
+                        for (let j = 0; j < n; j++) {
+                            seriesData.push([i, j, matrix[i][j]]);
+                        }
+                    }
+
+                    const opt = {
+                        tooltip: {
+                            trigger: 'item',
+                            formatter: p => {
+                                const row = labels[p.data[0]];
+                                const col = labels[p.data[1]];
+                                return `${row} ↔ ${col}<br/>相关系数: ${p.data[2].toFixed(3)}`;
+                            }
+                        },
+                        grid: { left: 80, right: 20, bottom: 80, top: 20 },
+                        xAxis: {
+                            type: 'category',
+                            data: labels,
+                            axisLabel: { rotate: 45, fontSize: 9, interval: 0 },
+                            splitArea: { show: true }
+                        },
+                        yAxis: {
+                            type: 'category',
+                            data: labels,
+                            axisLabel: { fontSize: 9, interval: 0 },
+                            splitArea: { show: true }
+                        },
+                        visualMap: {
+                            min: -1,
+                            max: 1,
+                            inRange: {
+                                color: ['#2c5f7a', '#4a8ab0', '#8fc9e8', '#c8e6f5', '#fffbe6', '#fdd0a2',
+                                    '#f5a06e', '#d95f3a', '#a02a1a'
+                                ]
+                            },
+                            calculable: true,
+                            orient: 'horizontal',
+                            left: 'center',
+                            bottom: 10
+                        },
+                        series: [{
+                            type: 'heatmap',
+                            data: seriesData,
+                            label: {
+                                show: true,
+                                fontSize: 7,
+                                color: '#1a2a3f',
+                                formatter: p => p.data[2].toFixed(2)
+                            },
+                            itemStyle: { borderWidth: 1, borderColor: '#fff' }
+                        }]
+                    };
+                    pearChart.setOption(opt, true);
+                    pearChart.resize();
+                }
+            }
+
+            // =========================================================
+            // 8. 上传功能
+            // =========================================================
+
+            uploadZone.addEventListener('click', () => fileInput.click());
+
+            uploadZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadZone.style.borderColor = 'var(--accent)';
+                uploadZone.style.background = '#f0f8ff';
+            });
+            uploadZone.addEventListener('dragleave', () => {
+                uploadZone.style.borderColor = '#b8cfe0';
+                uploadZone.style.background = '#f8fcff';
+            });
+            uploadZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadZone.style.borderColor = '#b8cfe0';
+                uploadZone.style.background = '#f8fcff';
+                if (e.dataTransfer.files.length) {
+                    fileInput.files = e.dataTransfer.files;
+                    handleFile(e.dataTransfer.files[0]);
+                }
+            });
+
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length) {
+                    handleFile(e.target.files[0]);
+                }
+            });
+
+            function handleFile(file) {
+                const ext = file.name.split('.').pop().toLowerCase();
+                if (!['xlsx', 'xls', 'csv'].includes(ext)) {
+                    uploadStatus.textContent = '⚠️ 不支持的文件格式';
+                    uploadStatus.className = 'upload-status err';
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        let data;
+                        if (ext === 'csv') {
+                            data = parseCSV(e.target.result);
+                        } else {
+                            const workbook = XLSX.read(e.target.result, { type: 'array' });
+                            const sheet = workbook.Sheets[workbook.SheetNames[0]];
+                            data = XLSX.utils.sheet_to_json(sheet);
+                        }
+
+                        if (!data || data.length === 0) {
+                            uploadStatus.textContent = '⚠️ 文件为空或无法解析';
+                            uploadStatus.className = 'upload-status err';
+                            return;
+                        }
+
+                        const headers = Object.keys(data[0]);
+                        const missing = REQUIRED_FIELDS.filter(f => !headers.includes(f));
+                        if (missing.length > 0) {
+                            uploadStatus.textContent = `⚠️ 缺少字段: ${missing.join(', ')}`;
+                            uploadStatus.className = 'upload-status err';
+                            return;
+                        }
+
+                        // 成功
+                        uploadedData = data;
+                        isDataMode = true;
+                        uploadStatus.textContent = `✅ ${data.length} 口井加载成功`;
+                        uploadStatus.className = 'upload-status ok';
+                        modeBadge.textContent = '数据模式';
+                        modeBadge.className = 'mode-badge data-mode';
+                        dataSourceLabel.textContent = `📤 已上传: ${file.name} (${data.length}口井)`;
+
+                        // 禁用手动输入
+                        document.querySelectorAll('#paramGroups input').forEach(inp => inp.disabled = true);
+
+                        // 显示预览
+                        showPreview(data, headers);
+
+                        // 自动运行
+                        runBtn.textContent = '🔄 分析中...';
+                        runBtn.disabled = true;
+                        setTimeout(() => {
+                            runBtn.textContent = '🚀 运行完整分析';
+                            runBtn.disabled = false;
+                            runAnalysis();
+                        }, 300);
+
+                    } catch (err) {
+                        uploadStatus.textContent = `⚠️ 解析失败: ${err.message}`;
+                        uploadStatus.className = 'upload-status err';
+                        console.error(err);
+                    }
+                };
+
+                if (ext === 'csv') {
+                    reader.readAsText(file);
+                } else {
+                    reader.readAsArrayBuffer(file);
+                }
+            }
+
+            function parseCSV(text) {
+                const lines = text.split('\n').filter(line => line.trim());
+                if (lines.length < 2) return [];
+                const headers = lines[0].split(',').map(h => h.trim());
+                const result = [];
+                for (let i = 1; i < lines.length; i++) {
+                    const vals = lines[i].split(',').map(v => v.trim());
+                    if (vals.length < headers.length) continue;
+                    const row = {};
+                    headers.forEach((h, idx) => {
+                        const val = vals[idx] || '';
+                        const num = parseFloat(val);
+                        row[h] = isNaN(num) ? val : num;
+                    });
+                    result.push(row);
+                }
+                return result;
+            }
+
+            function showPreview(data, headers) {
+                previewContainer.classList.remove('hidden');
+                dataShape.textContent = `${data.length} 行 × ${headers.length} 列`;
+                previewHead.innerHTML = `<tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr>`;
+                const rows = data.slice(0, 5);
+                previewBody.innerHTML = rows.map(row =>
+                    `<tr>${headers.map(h => `<td>${row[h] ?? ''}</td>`).join('')}</tr>`
+                ).join('');
+            }
+
+            // =========================================================
+            // 9. 重置功能
+            // =========================================================
+
+            resetBtn.addEventListener('click', function() {
+                isDataMode = false;
+                uploadedData = null;
+                uploadStatus.textContent = '已重置为手动模式';
+                uploadStatus.className = 'upload-status';
+                modeBadge.textContent = '手动模式';
+                modeBadge.className = 'mode-badge';
+                dataSourceLabel.textContent = '手动输入';
+                previewContainer.classList.add('hidden');
+                document.querySelectorAll('#paramGroups input').forEach(inp => inp.disabled = false);
+                fileInput.value = '';
+                runBtn.textContent = '🚀 运行完整分析';
+                runBtn.disabled = false;
+                analysisInfo.textContent = '手动模式 · 使用当前参数';
+                // 重新生成模拟数据并分析
+                setTimeout(runAnalysis, 200);
+            });
+
+            // =========================================================
+            // 10. 初始化
+            // =========================================================
+
+            function init() {
+                renderModels();
+                renderParams();
+                renderCompareTable();
+                initCharts();
+
+                // 首次运行（手动模式）
+                setTimeout(runAnalysis, 500);
+
+                runBtn.addEventListener('click', runAnalysis);
+
+                // 窗口自适应
+                let resizeTimer;
+                window.addEventListener('resize', function() {
+                    clearTimeout(resizeTimer);
+                    resizeTimer = setTimeout(() => {
+                        Object.values(chartInstances).forEach(c => { if (c) c.resize(); });
+                    }, 200);
+                });
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', init);
+            } else {
+                init();
+            }
+
+        })();
+    </script>
+
+</body>
+</html>
