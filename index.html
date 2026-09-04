@@ -42,7 +42,6 @@
             color: var(--text-primary);
             line-height: 1.7;
         }
-
         .navbar {
             background: var(--bg-nav);
             padding: 0.8rem 2.4rem;
@@ -92,13 +91,11 @@
             color: #fff;
             border-bottom-color: #4fc3f7;
         }
-
         .container {
             max-width: 1500px;
             margin: 0 auto;
             padding: 2rem 2rem 4rem;
         }
-
         .hero-banner {
             background: var(--gradient);
             border-radius: var(--radius);
@@ -152,7 +149,6 @@
             opacity: 0.75;
             letter-spacing: 0.3px;
         }
-
         .card {
             background: var(--bg-card);
             border-radius: var(--radius);
@@ -188,7 +184,6 @@
             background: #f39c12;
             color: #fff;
         }
-
         .grid-2 {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -199,7 +194,6 @@
             grid-template-columns: repeat(3, 1fr);
             gap: 1.8rem;
         }
-
         .model-card {
             background: #fafdff;
             border-radius: var(--radius-sm);
@@ -278,7 +272,6 @@
             background: linear-gradient(90deg, #2d8bcb, #4fc3f7);
             width: 0%;
         }
-
         .param-group {
             margin-bottom: 1.4rem;
         }
@@ -318,11 +311,6 @@
             border-color: var(--accent);
             box-shadow: 0 0 0 3px rgba(26, 122, 186, 0.1);
         }
-        .param-item input:disabled {
-            background: #f0f4f8;
-            color: #8ba0b8;
-        }
-
         .upload-zone {
             border: 2px dashed #b8cfe0;
             border-radius: var(--radius-sm);
@@ -365,7 +353,6 @@
         .upload-zone .upload-status.err {
             color: var(--color-danger);
         }
-
         .btn {
             padding: 0.7rem 2rem;
             border-radius: 40px;
@@ -414,14 +401,6 @@
         .btn-secondary:hover {
             background: #d4e8fc;
         }
-        .btn-danger {
-            background: var(--color-danger);
-            color: #fff;
-        }
-        .btn-danger:hover {
-            background: #a93226;
-        }
-
         .result-panel {
             background: #f8fcff;
             border-radius: var(--radius-sm);
@@ -450,18 +429,10 @@
             color: var(--color-success);
             font-size: 0.9rem;
         }
-
         .chart-box {
             width: 100%;
             height: 360px;
         }
-        .chart-box-sm {
-            height: 280px;
-        }
-        .chart-box-lg {
-            height: 420px;
-        }
-
         .table-wrap {
             overflow-x: auto;
         }
@@ -488,7 +459,6 @@
             background: #e6f5e6 !important;
             font-weight: 600;
         }
-
         .preview-wrap {
             overflow-x: auto;
             margin-top: 0.8rem;
@@ -511,7 +481,6 @@
             font-family: 'Consolas', monospace;
             font-size: 0.72rem;
         }
-
         .status-box {
             padding: 0.8rem 1.2rem;
             border-radius: var(--radius-sm);
@@ -545,7 +514,6 @@
         .status-box .status-icon {
             font-size: 1.4rem;
         }
-
         .mt-1 {
             margin-top: 0.8rem;
         }
@@ -570,10 +538,6 @@
             color: var(--text-muted);
             font-size: 0.85rem;
         }
-        .text-success {
-            color: var(--color-success);
-            font-weight: 600;
-        }
         .badge-pill {
             background: #eaf3fd;
             padding: 0.1rem 0.9rem;
@@ -593,16 +557,6 @@
         .hidden {
             display: none !important;
         }
-        .divider {
-            border: none;
-            border-top: 2px dashed #e2ecf7;
-            margin: 1.2rem 0;
-        }
-        .required-star {
-            color: var(--color-danger);
-            font-weight: 700;
-        }
-
         @media (max-width: 1024px) {
             .grid-2 {
                 grid-template-columns: 1fr;
@@ -656,9 +610,6 @@
             }
             .chart-box {
                 height: 260px;
-            }
-            .chart-box-lg {
-                height: 300px;
             }
             .param-grid {
                 grid-template-columns: 1fr 1fr;
@@ -735,7 +686,6 @@
                 <button class="btn-secondary" id="resetDataBtn" type="button">↺ 清除数据</button>
             </div>
 
-            <!-- 数据预览 -->
             <div id="previewContainer" class="hidden">
                 <div class="flex-between">
                     <span style="font-weight:600; color:var(--text-secondary);">📊 数据预览</span>
@@ -913,7 +863,7 @@
                 ]
             }];
 
-            // 25个特征的完整列表（用于上传校验和训练）
+            // 25个特征的完整列表
             const ALL_FEATURES = [
                 'EUR', 'porosity', 'permeability', 'gas_sat', 'thickness', 'toc', 'ro', 'clay', 'brittle',
                 'fluid_vol', 'proppant', 'stages', 'cluster_dist', 'cluster_scale', 'injection_rate',
@@ -921,7 +871,7 @@
                 'completion', 'well_diameter', 'horizontal_len', 'well_name'
             ];
 
-            const REQUIRED_FIELDS = ALL_FEATURES; // 全部25个字段
+            const REQUIRED_FIELDS = ALL_FEATURES;
 
             const FIELD_LABELS = {
                 EUR: 'EUR',
@@ -1492,7 +1442,6 @@
                         }
 
                         const headers = Object.keys(data[0]);
-                        // 检查是否包含所有必需字段（跳过well_name和completion这两个可选文本字段）
                         const requiredCheck = REQUIRED_FIELDS.filter(f => f !== 'well_name' && f !== 'completion');
                         const missing = requiredCheck.filter(f => !headers.includes(f));
                         if (missing.length > 0) {
