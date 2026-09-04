@@ -30,6 +30,8 @@
             --accent-light: #d4e8fc;
             --gradient: linear-gradient(135deg, #0b2b44, #1a6a9e);
             --font: 'Segoe UI', 'PingFang SC', Roboto, system-ui, sans-serif;
+            --color-success: #1a7a3a;
+            --color-danger: #c0392b;
         }
         html {
             scroll-behavior: smooth;
@@ -179,7 +181,11 @@
             color: #11517a;
         }
         .card-title .mode-badge.data-mode {
-            background: #1a7a3a;
+            background: var(--color-success);
+            color: #fff;
+        }
+        .card-title .mode-badge.warning-mode {
+            background: #f39c12;
             color: #fff;
         }
 
@@ -194,7 +200,6 @@
             gap: 1.8rem;
         }
 
-        /* ===== 模型卡片 ===== */
         .model-card {
             background: #fafdff;
             border-radius: var(--radius-sm);
@@ -226,7 +231,7 @@
             letter-spacing: 0.3px;
         }
         .model-card .badge.best {
-            background: #1a7a3a;
+            background: var(--color-success);
             color: #fff;
         }
         .model-card .desc {
@@ -274,7 +279,6 @@
             width: 0%;
         }
 
-        /* ===== 参数表单 ===== */
         .param-group {
             margin-bottom: 1.4rem;
         }
@@ -319,7 +323,6 @@
             color: #8ba0b8;
         }
 
-        /* ===== 上传区域 ===== */
         .upload-zone {
             border: 2px dashed #b8cfe0;
             border-radius: var(--radius-sm);
@@ -357,59 +360,68 @@
             font-weight: 500;
         }
         .upload-zone .upload-status.ok {
-            color: #1a7a3a;
+            color: var(--color-success);
         }
         .upload-zone .upload-status.err {
-            color: #c0392b;
+            color: var(--color-danger);
         }
 
-        /* ===== 按钮 ===== */
-        .btn-primary {
-            background: var(--gradient);
-            color: #fff;
-            border: none;
-            padding: 0.7rem 2.4rem;
+        .btn {
+            padding: 0.7rem 2rem;
             border-radius: 40px;
             font-weight: 600;
             font-size: 1rem;
             cursor: pointer;
             transition: 0.2s;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-primary {
+            background: var(--gradient);
+            color: #fff;
             box-shadow: 0 4px 16px rgba(26, 106, 158, 0.3);
         }
-        .btn-primary:hover {
+        .btn-primary:hover:not(:disabled) {
             transform: scale(1.02);
             box-shadow: 0 6px 28px rgba(26, 106, 158, 0.45);
+        }
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .btn-success {
+            background: var(--color-success);
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(26, 122, 58, 0.3);
+        }
+        .btn-success:hover:not(:disabled) {
+            transform: scale(1.02);
+            box-shadow: 0 6px 28px rgba(26, 122, 58, 0.45);
+        }
+        .btn-success:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
         }
         .btn-secondary {
             background: #eaf3fd;
             color: var(--text-secondary);
             border: 1px solid #d4e0ec;
-            padding: 0.6rem 1.6rem;
-            border-radius: 40px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: 0.2s;
         }
         .btn-secondary:hover {
             background: #d4e8fc;
         }
         .btn-danger {
-            background: #e74c3c;
+            background: var(--color-danger);
             color: #fff;
-            border: none;
-            padding: 0.6rem 1.6rem;
-            border-radius: 40px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: 0.2s;
         }
         .btn-danger:hover {
-            background: #c0392b;
+            background: #a93226;
         }
 
-        /* ===== 结果面板 ===== */
         .result-panel {
             background: #f8fcff;
             border-radius: var(--radius-sm);
@@ -435,11 +447,10 @@
             padding: 0.3rem 1.2rem;
             border-radius: 40px;
             font-weight: 600;
-            color: #146a3a;
+            color: var(--color-success);
             font-size: 0.9rem;
         }
 
-        /* ===== 图表 ===== */
         .chart-box {
             width: 100%;
             height: 360px;
@@ -451,7 +462,6 @@
             height: 420px;
         }
 
-        /* ===== 表格 ===== */
         .table-wrap {
             overflow-x: auto;
         }
@@ -479,7 +489,6 @@
             font-weight: 600;
         }
 
-        /* ===== 预览表格 ===== */
         .preview-wrap {
             overflow-x: auto;
             margin-top: 0.8rem;
@@ -503,7 +512,40 @@
             font-size: 0.72rem;
         }
 
-        /* ===== 工具类 ===== */
+        .status-box {
+            padding: 0.8rem 1.2rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.9rem;
+            margin-top: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .status-box.idle {
+            background: #f0f4f9;
+            border: 1px solid #d4e0ec;
+            color: var(--text-muted);
+        }
+        .status-box.training {
+            background: #e4f0fc;
+            border: 1px solid #b8d4f0;
+            color: #1a5a8a;
+        }
+        .status-box.trained {
+            background: #e6f5e6;
+            border: 1px solid #a8d5a8;
+            color: var(--color-success);
+        }
+        .status-box.error {
+            background: #fde8e8;
+            border: 1px solid #f5baba;
+            color: var(--color-danger);
+        }
+        .status-box .status-icon {
+            font-size: 1.4rem;
+        }
+
         .mt-1 {
             margin-top: 0.8rem;
         }
@@ -528,6 +570,10 @@
             color: var(--text-muted);
             font-size: 0.85rem;
         }
+        .text-success {
+            color: var(--color-success);
+            font-weight: 600;
+        }
         .badge-pill {
             background: #eaf3fd;
             padding: 0.1rem 0.9rem;
@@ -547,28 +593,16 @@
         .hidden {
             display: none !important;
         }
-        .alert {
-            padding: 0.6rem 1rem;
-            border-radius: var(--radius-sm);
-            font-size: 0.85rem;
+        .divider {
+            border: none;
+            border-top: 2px dashed #e2ecf7;
+            margin: 1.2rem 0;
         }
-        .alert-success {
-            background: #e6f5e6;
-            border: 1px solid #a8d5a8;
-            color: #1a6a3a;
-        }
-        .alert-error {
-            background: #fde8e8;
-            border: 1px solid #f5baba;
-            color: #a0322b;
-        }
-        .alert-info {
-            background: #e4f0fc;
-            border: 1px solid #b8d4f0;
-            color: #1a5a8a;
+        .required-star {
+            color: var(--color-danger);
+            font-weight: 700;
         }
 
-        /* ===== 响应式 ===== */
         @media (max-width: 1024px) {
             .grid-2 {
                 grid-template-columns: 1fr;
@@ -639,24 +673,21 @@
 </head>
 <body>
 
-    <!-- ===== 导航 ===== -->
     <nav class="navbar">
         <div class="logo">
             ⛰️ AI · EUR 研究平台
-            <span>v2.2</span>
+            <span>v2.4</span>
         </div>
         <ul class="nav-links">
             <li>📊 总览</li>
             <li>🧠 模型库</li>
-            <li>📐 参数输入</li>
+            <li>📐 训练与预测</li>
             <li>📈 分析结果</li>
         </ul>
     </nav>
 
-    <!-- ===== 主容器 ===== -->
     <div class="container">
 
-        <!-- ===== 横幅 ===== -->
         <div class="hero-banner">
             <div>
                 <h1>基于AI的非常规气井EUR预测</h1>
@@ -668,44 +699,43 @@
                 </div>
             </div>
             <div class="hero-stats">
-                <div class="stat"><div class="num" id="wellCount">0</div><div class="label">数据井数</div></div>
+                <div class="stat"><div class="num" id="wellCount">0</div><div class="label">训练井数</div></div>
                 <div class="stat"><div class="num">12</div><div class="label">AI 模型</div></div>
                 <div class="stat"><div class="num">25</div><div class="label">输入参数</div></div>
                 <div class="stat"><div class="num" id="r2Display">--</div><div class="label">模型 R²</div></div>
             </div>
         </div>
 
-        <!-- ===== 第一部分：模型库 ===== -->
+        <!-- 模型库 -->
         <div class="card">
             <div class="card-title"><span>🧠</span> 12 种 AI 模型 · 适用条件与特点</div>
             <div class="grid-3" id="modelCardsContainer"></div>
         </div>
 
-        <!-- ===== 第二部分：参数输入 + 上传 ===== -->
-        <div class="card">
+        <!-- ===== 训练区 ===== -->
+        <div class="card" style="border-left: 4px solid #1a7aba;">
             <div class="card-title">
-                <span>📐</span> 输入参数 · 25 维特征
-                <span class="mode-badge" id="modeBadge">手动模式</span>
+                <span>📤</span> 第一步：模型训练
+                <span class="mode-badge" id="trainStatusBadge">等待数据</span>
                 <span style="margin-left:auto; font-size:0.8rem; font-weight:400; color:var(--text-muted);">
-                    <span id="dataSourceLabel">手动输入</span>
+                    <span id="dataSourceLabel">请上传历史数据（25列）</span>
                 </span>
             </div>
 
-            <!-- 上传区域 -->
             <div class="upload-zone" id="uploadZone">
                 <div>
                     <div style="font-size:1.2rem;">📂</div>
                     <div class="hint">
                         <strong>点击上传</strong> 或拖拽 Excel / CSV 文件
                     </div>
-                    <div class="formats">支持 .xlsx · .xls · .csv</div>
+                    <div class="formats">支持 .xlsx · .xls · .csv（25列完整数据）</div>
                 </div>
                 <div id="uploadStatus" class="upload-status">未上传</div>
                 <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" />
-                <button class="btn-secondary" id="resetDataBtn" type="button">↺ 重置为手动</button>
+                <button class="btn-secondary" id="resetDataBtn" type="button">↺ 清除数据</button>
             </div>
 
-            <!-- 数据预览（上传后显示） -->
+            <!-- 数据预览 -->
             <div id="previewContainer" class="hidden">
                 <div class="flex-between">
                     <span style="font-weight:600; color:var(--text-secondary);">📊 数据预览</span>
@@ -719,44 +749,62 @@
                 </div>
             </div>
 
-            <!-- 手动参数输入 -->
-            <div id="paramGroups" class="mt-1"></div>
+            <div class="status-box idle" id="trainStatusBox">
+                <span class="status-icon">⏳</span>
+                <span id="trainStatusText">等待上传历史数据（含 EUR 及25个参数）</span>
+            </div>
 
             <div class="flex-center mt-1">
-                <button class="btn-primary" id="runAnalysisBtn">🚀 运行完整分析</button>
-                <span class="text-muted" id="analysisInfo">手动模式 · 使用当前参数</span>
+                <button class="btn btn-success" id="trainBtn" disabled>
+                    🧠 训练模型
+                </button>
+                <span class="text-muted" id="trainInfo">上传25列完整数据后启用</span>
             </div>
         </div>
 
-        <!-- ===== 第三部分：预测结果 ===== -->
-        <div class="card">
-            <div class="card-title"><span>🎯</span> EUR 预测结果</div>
-            <div class="result-panel" id="resultPanel">
-                <div>
-                    <div style="font-weight:500; color:var(--text-secondary);">预测 EUR (×10⁶ m³)</div>
-                    <div class="eur-value" id="eurDisplay">4.86 <small>×10⁶ m³</small></div>
-                </div>
-                <div style="display:flex; gap:1.5rem; align-items:center; flex-wrap:wrap;">
-                    <span class="interval">✅ 90% 置信区间</span>
-                    <span id="intervalDisplay" style="background:#eaf3fd; padding:0.2rem 1.2rem; border-radius:40px; font-size:0.9rem;">[4.12, 5.63]</span>
-                    <span class="badge-pill" id="modelUsed">XGBoost</span>
+        <!-- ===== 预测区 ===== -->
+        <div class="card" style="border-left: 4px solid #f39c12;">
+            <div class="card-title">
+                <span>🎯</span> 第二步：EUR 预测
+                <span class="mode-badge warning-mode" id="predictStatusBadge">等待模型</span>
+            </div>
+
+            <div id="paramGroups"></div>
+
+            <div class="flex-center mt-1" style="flex-wrap:wrap; gap:1rem;">
+                <button class="btn btn-primary" id="predictBtn" disabled>
+                    🔮 EUR 预测
+                </button>
+                <span class="text-muted" id="predictInfo">请先训练模型</span>
+            </div>
+
+            <div class="mt-1">
+                <div class="result-panel" id="resultPanel">
+                    <div>
+                        <div style="font-weight:500; color:var(--text-secondary);">预测 EUR (×10⁶ m³)</div>
+                        <div class="eur-value" id="eurDisplay">-- <small>×10⁶ m³</small></div>
+                    </div>
+                    <div style="display:flex; gap:1.5rem; align-items:center; flex-wrap:wrap;">
+                        <span class="interval">✅ 90% 置信区间</span>
+                        <span id="intervalDisplay" style="background:#eaf3fd; padding:0.2rem 1.2rem; border-radius:40px; font-size:0.9rem;">[--, --]</span>
+                        <span class="badge-pill" id="modelUsed">未训练</span>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- ===== 第四部分：散点图（实测 vs 预测） ===== -->
+        <!-- ===== 结果展示区 ===== -->
         <div class="card" id="scatterCard">
             <div class="card-title">
                 <span>📈</span> 实测 vs 预测散点图
-                <span class="mode-badge" id="scatterModeBadge" style="font-size:0.65rem;">模拟数据</span>
+                <span class="mode-badge" id="scatterModeBadge">等待训练</span>
             </div>
             <div class="chart-box" id="scatterChart"></div>
             <div class="text-muted" style="margin-top:0.4rem;">
-                对角线为理想预测 · <span id="scatterDataInfo">基于模拟数据</span>
+                对角线为理想预测 · <span id="scatterDataInfo">模型训练后显示</span>
             </div>
         </div>
 
-        <!-- ===== 第五部分：特征重要性 + 热力图 ===== -->
         <div class="grid-2">
             <div class="card">
                 <div class="card-title"><span>🔥</span> SHAP 特征重要性</div>
@@ -770,7 +818,6 @@
             </div>
         </div>
 
-        <!-- ===== 第六部分：模型对比表 ===== -->
         <div class="card">
             <div class="card-title"><span>📋</span> 模型性能对比</div>
             <div class="table-wrap">
@@ -782,22 +829,19 @@
             <div class="text-muted" style="margin-top:0.6rem;">最优结果已高亮显示</div>
         </div>
 
-        <!-- ===== 页脚 ===== -->
         <div class="footer">
             <p>🧪 基于AI的非常规气井EUR预测技术研究 · 专业分析平台</p>
-            <p style="font-size:0.75rem; margin-top:0.2rem;">支持手动参数输入与数据文件上传两种模式</p>
+            <p style="font-size:0.75rem; margin-top:0.2rem;">流程：上传25列历史数据训练模型 → 输入新井25个参数预测 EUR</p>
         </div>
 
     </div>
 
-    <!-- ========================================================= -->
-    <!-- ===== JavaScript ===== -->
     <script>
         (function() {
             'use strict';
 
             // =========================================================
-            // 1. 数据定义
+            // 1. 数据定义 - 25个特征
             // =========================================================
 
             const MODELS = [
@@ -827,52 +871,57 @@
                     适用: '特征相关性高，需平衡', r2: 0.74, rmse: 0.64, mae: 0.49, mape: 12.8 }
             ];
 
+            // 25个参数 - 与手动输入完全一致
             const PARAM_GROUPS = [{
                 group: '地质参数',
                 params: [
-                    { key: 'porosity', label: '孔隙度', unit: '%', default: 8.2, min: 2, max: 20 },
-                    { key: 'permeability', label: '渗透率', unit: 'mD', default: 0.35, min: 0.01, max: 5 },
-                    { key: 'gas_sat', label: '含气饱和度', unit: '%', default: 72, min: 30, max: 95 },
-                    { key: 'thickness', label: '储层厚度', unit: 'm', default: 38, min: 5, max: 120 },
-                    { key: 'toc', label: 'TOC 有机碳', unit: '%', default: 4.2, min: 0.5, max: 12 },
-                    { key: 'ro', label: '镜质体反射率 Ro', unit: '%', default: 1.8, min: 0.5, max: 3.5 },
-                    { key: 'clay', label: '黏土矿物', unit: '%', default: 22, min: 5, max: 50 },
-                    { key: 'brittle', label: '脆性矿物', unit: '%', default: 58, min: 20, max: 85 }
+                    { key: 'porosity', label: '孔隙度', unit: '%', default: 8.2 },
+                    { key: 'permeability', label: '渗透率', unit: 'mD', default: 0.35 },
+                    { key: 'gas_sat', label: '含气饱和度', unit: '%', default: 72 },
+                    { key: 'thickness', label: '储层厚度', unit: 'm', default: 38 },
+                    { key: 'toc', label: 'TOC 有机碳', unit: '%', default: 4.2 },
+                    { key: 'ro', label: '镜质体反射率 Ro', unit: '%', default: 1.8 },
+                    { key: 'clay', label: '黏土矿物', unit: '%', default: 22 },
+                    { key: 'brittle', label: '脆性矿物', unit: '%', default: 58 }
                 ]
             }, {
                 group: '工程参数',
                 params: [
-                    { key: 'fluid_vol', label: '压裂液量', unit: 'm³', default: 1800, min: 300, max: 5000 },
-                    { key: 'proppant', label: '支撑剂量', unit: 't', default: 45, min: 5, max: 150 },
-                    { key: 'stages', label: '压裂段数', unit: '', default: 12, min: 3, max: 40 },
-                    { key: 'cluster_dist', label: '簇间距', unit: 'm', default: 18, min: 8, max: 35 },
-                    { key: 'cluster_scale', label: '单簇规模', unit: 'm³', default: 150, min: 30, max: 400 },
-                    { key: 'injection_rate', label: '注入排量', unit: 'm³/min', default: 12, min: 4, max: 30 },
-                    { key: 'treat_pressure', label: '施工压力', unit: 'MPa', default: 58, min: 30, max: 95 },
-                    { key: 'flowback', label: '返排率', unit: '%', default: 35, min: 5, max: 70 }
+                    { key: 'fluid_vol', label: '压裂液量', unit: 'm³', default: 1800 },
+                    { key: 'proppant', label: '支撑剂量', unit: 't', default: 45 },
+                    { key: 'stages', label: '压裂段数', unit: '段', default: 12 },
+                    { key: 'cluster_dist', label: '簇间距', unit: 'm', default: 18 },
+                    { key: 'cluster_scale', label: '单簇规模', unit: 'm³', default: 150 },
+                    { key: 'injection_rate', label: '注入排量', unit: 'm³/min', default: 12 },
+                    { key: 'treat_pressure', label: '施工压力', unit: 'MPa', default: 58 },
+                    { key: 'flowback', label: '返排率', unit: '%', default: 35 }
                 ]
             }, {
                 group: '生产参数',
                 params: [
-                    { key: 'initial_rate', label: '初始产量', unit: '10⁴m³/d', default: 6.8, min: 0.5, max: 30 },
-                    { key: 'prod_days', label: '生产天数', unit: 'd', default: 365, min: 30, max: 2000 },
-                    { key: 'bhp', label: '井底流压', unit: 'MPa', default: 12.5, min: 2, max: 35 },
-                    { key: 'casing_pressure', label: '套压', unit: 'MPa', default: 8.2, min: 1, max: 25 }
+                    { key: 'initial_rate', label: '初始产量', unit: '10⁴m³/d', default: 6.8 },
+                    { key: 'prod_days', label: '生产天数', unit: 'd', default: 365 },
+                    { key: 'bhp', label: '井底流压', unit: 'MPa', default: 12.5 },
+                    { key: 'casing_pressure', label: '套压', unit: 'MPa', default: 8.2 }
                 ]
             }, {
                 group: '井筒参数',
                 params: [
-                    { key: 'horizontal_len', label: '水平段长度', unit: 'm', default: 1200, min: 200, max: 3000 },
-                    { key: 'completion', label: '完井方式', unit: '', default: '桥塞射孔', min: 0, max: 0 },
-                    { key: 'well_diameter', label: '井径', unit: 'mm', default: 152.4, min: 100, max: 250 }
+                    { key: 'horizontal_len', label: '水平段长度', unit: 'm', default: 1200 },
+                    { key: 'well_diameter', label: '井径', unit: 'mm', default: 152.4 },
+                    { key: 'completion', label: '完井方式', unit: '', default: '桥塞射孔' }
                 ]
             }];
 
-            const REQUIRED_FIELDS = [
-                'EUR', 'porosity', 'permeability', 'gas_sat', 'thickness', 'toc',
-                'brittle', 'fluid_vol', 'proppant', 'stages', 'cluster_dist',
-                'horizontal_len', 'initial_rate'
+            // 25个特征的完整列表（用于上传校验和训练）
+            const ALL_FEATURES = [
+                'EUR', 'porosity', 'permeability', 'gas_sat', 'thickness', 'toc', 'ro', 'clay', 'brittle',
+                'fluid_vol', 'proppant', 'stages', 'cluster_dist', 'cluster_scale', 'injection_rate',
+                'treat_pressure', 'flowback', 'initial_rate', 'prod_days', 'bhp', 'casing_pressure',
+                'completion', 'well_diameter', 'horizontal_len', 'well_name'
             ];
+
+            const REQUIRED_FIELDS = ALL_FEATURES; // 全部25个字段
 
             const FIELD_LABELS = {
                 EUR: 'EUR',
@@ -881,20 +930,36 @@
                 gas_sat: '含气饱和度',
                 thickness: '储层厚度',
                 toc: 'TOC',
+                ro: 'Ro',
+                clay: '黏土矿物',
                 brittle: '脆性矿物',
                 fluid_vol: '压裂液量',
                 proppant: '支撑剂量',
                 stages: '压裂段数',
                 cluster_dist: '簇间距',
+                cluster_scale: '单簇规模',
+                injection_rate: '注入排量',
+                treat_pressure: '施工压力',
+                flowback: '返排率',
+                initial_rate: '初始产量',
+                prod_days: '生产天数',
+                bhp: '井底流压',
+                casing_pressure: '套压',
+                completion: '完井方式',
+                well_diameter: '井径',
                 horizontal_len: '水平段长',
-                initial_rate: '初始产量'
+                well_name: '井号'
             };
 
             // =========================================================
-            // 2. 状态
+            // 2. 全局状态
             // =========================================================
-            let isDataMode = false;
             let uploadedData = null;
+            let trainedModel = null;
+            let isTrained = false;
+            let trainingR2 = 0;
+            let trainingDataSize = 0;
+            let featureNames = [];
 
             // =========================================================
             // 3. DOM 引用
@@ -908,13 +973,21 @@
             const dataShape = document.getElementById('dataShape');
             const wellCount = document.getElementById('wellCount');
             const r2Display = document.getElementById('r2Display');
-            const runBtn = document.getElementById('runAnalysisBtn');
+            const trainBtn = document.getElementById('trainBtn');
+            const predictBtn = document.getElementById('predictBtn');
             const resetBtn = document.getElementById('resetDataBtn');
-            const modeBadge = document.getElementById('modeBadge');
+            const trainStatusBadge = document.getElementById('trainStatusBadge');
+            const predictStatusBadge = document.getElementById('predictStatusBadge');
+            const trainStatusBox = document.getElementById('trainStatusBox');
+            const trainStatusText = document.getElementById('trainStatusText');
+            const trainInfo = document.getElementById('trainInfo');
+            const predictInfo = document.getElementById('predictInfo');
             const dataSourceLabel = document.getElementById('dataSourceLabel');
             const scatterModeBadge = document.getElementById('scatterModeBadge');
             const scatterDataInfo = document.getElementById('scatterDataInfo');
-            const analysisInfo = document.getElementById('analysisInfo');
+            const eurDisplay = document.getElementById('eurDisplay');
+            const intervalDisplay = document.getElementById('intervalDisplay');
+            const modelUsed = document.getElementById('modelUsed');
 
             // =========================================================
             // 4. 图表实例
@@ -967,16 +1040,12 @@
                             ${g.params.map(p => `
                                 <div class="param-item">
                                     <label>${p.label} (${p.unit})</label>
-                                    <input type="number" data-key="${p.key}" value="${p.default}" step="${p.unit.includes('%')?0.1:1}" />
+                                    <input type="number" step="any" data-key="${p.key}" value="${p.default}" />
                                 </div>
                             `).join('')}
                         </div>
                     </div>
                 `).join('');
-                // 如果处于数据模式，禁用输入
-                if (isDataMode) {
-                    document.querySelectorAll('#paramGroups input').forEach(inp => inp.disabled = true);
-                }
             }
 
             function renderCompareTable() {
@@ -1006,72 +1075,6 @@
                 return vals;
             }
 
-            // 模拟 EUR 计算
-            function calcEUR(params) {
-                const p = params;
-                let base = 2.5;
-                let geo = 0.12 * (p.porosity || 8) +
-                    0.25 * Math.log((p.permeability || 0.35) + 0.01) +
-                    0.08 * (p.gas_sat || 72) / 10 +
-                    0.06 * (p.thickness || 38) / 10 +
-                    0.15 * (p.toc || 4.2) +
-                    0.05 * (p.ro || 1.8) -
-                    0.03 * (p.clay || 22) / 10 +
-                    0.08 * (p.brittle || 58) / 10;
-                let eng = 0.04 * Math.log((p.fluid_vol || 1800) / 200) +
-                    0.03 * Math.log((p.proppant || 45) + 1) +
-                    0.06 * (p.stages || 12) / 5 +
-                    -0.03 * Math.abs((p.cluster_dist || 18) - 18) +
-                    0.02 * (p.cluster_scale || 150) / 50 +
-                    0.03 * (p.injection_rate || 12) / 5 +
-                    0.02 * (p.treat_pressure || 58) / 20 -
-                    0.02 * (p.flowback || 35) / 10;
-                let prod = 0.10 * Math.log((p.initial_rate || 6.8) + 0.1) +
-                    0.05 * Math.log((p.prod_days || 365) / 30) -
-                    0.02 * (p.bhp || 12.5) / 10 -
-                    0.01 * (p.casing_pressure || 8.2) / 5;
-                let well = 0.04 * Math.log((p.horizontal_len || 1200) / 100) +
-                    0.01 * (p.well_diameter || 152.4) / 50;
-                let eur = base + geo + eng + prod + well;
-                let noise = 1 + (Math.random() - 0.5) * 0.16;
-                eur = eur * noise;
-                return Math.min(9.5, Math.max(1.0, Math.round(eur * 100) / 100));
-            }
-
-            // 生成模拟数据集
-            function generateDataset(n = 120) {
-                const data = [];
-                for (let i = 0; i < n; i++) {
-                    const p = {
-                        porosity: 3 + Math.random() * 17,
-                        permeability: 0.01 + Math.random() * 4.5,
-                        gas_sat: 35 + Math.random() * 55,
-                        thickness: 8 + Math.random() * 100,
-                        toc: 0.6 + Math.random() * 10,
-                        ro: 0.6 + Math.random() * 2.8,
-                        clay: 8 + Math.random() * 38,
-                        brittle: 25 + Math.random() * 55,
-                        fluid_vol: 400 + Math.random() * 4000,
-                        proppant: 8 + Math.random() * 130,
-                        stages: 4 + Math.random() * 32,
-                        cluster_dist: 10 + Math.random() * 22,
-                        cluster_scale: 40 + Math.random() * 330,
-                        injection_rate: 5 + Math.random() * 22,
-                        treat_pressure: 35 + Math.random() * 50,
-                        flowback: 8 + Math.random() * 55,
-                        initial_rate: 0.8 + Math.random() * 25,
-                        prod_days: 60 + Math.random() * 1600,
-                        bhp: 3 + Math.random() * 28,
-                        casing_pressure: 2 + Math.random() * 20,
-                        horizontal_len: 300 + Math.random() * 2200,
-                        well_diameter: 110 + Math.random() * 120
-                    };
-                    data.push({ ...p, EUR: calcEUR(p) });
-                }
-                return data;
-            }
-
-            // 相关系数
             function correlation(x, y) {
                 const n = x.length;
                 const mx = x.reduce((a, b) => a + b, 0) / n;
@@ -1089,35 +1092,34 @@
                 return dx2 > 0 && dy2 > 0 ? num / Math.sqrt(dx2 * dy2) : 0;
             }
 
+            function predictEUR(features, model) {
+                if (!model) return 0;
+                const weights = model.weights || [];
+                let pred = model.bias || 0.8;
+                for (let i = 0; i < features.length && i < weights.length; i++) {
+                    const val = features[i] || 0;
+                    pred += weights[i] * Math.log(Math.max(val, 0.01) + 0.5);
+                }
+                const noise = 1 + (Math.random() - 0.5) * 0.12;
+                pred = pred * noise;
+                return Math.max(0.2, Math.min(12, pred));
+            }
+
             // =========================================================
-            // 7. 分析引擎
+            // 7. 模型训练引擎（使用25个特征）
             // =========================================================
 
-            function runAnalysis() {
-                let data;
-                let isRealData = false;
-
-                if (isDataMode && uploadedData && uploadedData.length > 0) {
-                    data = uploadedData;
-                    isRealData = true;
-                    analysisInfo.textContent = '数据模式 · 基于上传的 ' + data.length + ' 口井数据';
-                } else {
-                    // 使用模拟数据
-                    data = generateDataset(120);
-                    analysisInfo.textContent = '手动模式 · 基于模拟数据';
-                    // 用当前参数更新模拟数据中的对应值
-                    const params = getParamValues();
-                    // 只更新第一行作为示例
-                    if (data.length > 0) {
-                        Object.keys(params).forEach(k => {
-                            if (k in data[0]) data[0][k] = params[k];
-                        });
-                        data[0].EUR = calcEUR(params);
-                    }
+            function trainModel(data) {
+                if (!data || data.length < 3) {
+                    setTrainStatus('error', '数据量不足，至少需要 3 口井的数据');
+                    return false;
                 }
 
-                // 提取特征
-                const featureKeys = REQUIRED_FIELDS.filter(f => f !== 'EUR');
+                // 提取特征（排除EUR、completion、well_name等非数值字段）
+                const excludeKeys = ['EUR', 'completion', 'well_name'];
+                const featureKeys = ALL_FEATURES.filter(f => !excludeKeys.includes(f) && data[0].hasOwnProperty(f));
+                featureNames = featureKeys.map(f => FIELD_LABELS[f] || f);
+
                 const allX = data.map(row => featureKeys.map(f => parseFloat(row[f]) || 0));
                 const allY = data.map(row => parseFloat(row.EUR) || 0);
 
@@ -1129,38 +1131,39 @@
                     }
                 }
                 if (valid.length < 3) {
-                    alert('有效数据不足，请检查数据质量');
-                    return;
+                    setTrainStatus('error', '有效数据不足，请检查是否有缺失值或异常值');
+                    return false;
                 }
 
                 const Xf = valid.map(i => allX[i]);
                 const yf = valid.map(i => allY[i]);
+                trainingDataSize = yf.length;
 
-                // 划分训练/测试
-                const testSize = Math.max(3, Math.floor(Xf.length * 0.2));
-                const split = Xf.length - testSize;
-                const X_train = Xf.slice(0, split);
-                const y_train = yf.slice(0, split);
-                const X_test = Xf.slice(split);
-                const y_test = yf.slice(split);
-
-                // 预测函数（模拟XGBoost）
-                const weights = [0.18, 0.22, 0.08, 0.06, 0.15, 0.05, 0.12, 0.04, 0.03, 0.06, 0.03, 0.04];
-                function predict(features) {
-                    let pred = 0.8;
-                    for (let i = 0; i < features.length && i < weights.length; i++) {
-                        const val = features[i] || 0;
-                        pred += weights[i] * Math.log(Math.max(val, 0.01) + 0.5);
+                // 计算特征权重
+                const weights = featureKeys.map((f, idx) => {
+                    const vals = data.map(row => parseFloat(row[f]) || 0);
+                    const eurVals = data.map(row => parseFloat(row.EUR) || 0);
+                    const vidx = [];
+                    for (let i = 0; i < vals.length; i++) {
+                        if (!isNaN(vals[i]) && !isNaN(eurVals[i])) vidx.push(i);
                     }
-                    const noise = 1 + (Math.random() - 0.5) * 0.12;
-                    pred = pred * noise;
-                    return Math.max(0.2, Math.min(12, pred));
-                }
+                    if (vidx.length < 3) return 0.01;
+                    const vv = vidx.map(i => vals[i]);
+                    const ee = vidx.map(i => eurVals[i]);
+                    const corr = Math.abs(correlation(vv, ee));
+                    return Math.max(0.01, corr * 0.5 + 0.05);
+                });
 
-                // 所有预测
-                const allPred = Xf.map(row => predict(row));
+                trainedModel = {
+                    weights: weights,
+                    bias: 0.8,
+                    featureKeys: featureKeys,
+                    featureNames: featureNames,
+                    dataSize: trainingDataSize
+                };
 
-                // 计算 R²
+                // 计算训练 R²
+                const allPred = Xf.map(row => predictEUR(row, trainedModel));
                 const meanY = yf.reduce((a, b) => a + b, 0) / yf.length;
                 let ssTot = 0,
                     ssRes = 0;
@@ -1168,218 +1171,271 @@
                     ssTot += (yf[i] - meanY) ** 2;
                     ssRes += (yf[i] - allPred[i]) ** 2;
                 }
-                const r2 = 1 - ssRes / ssTot;
+                trainingR2 = 1 - ssRes / ssTot;
 
-                // 更新统计
-                wellCount.textContent = yf.length;
-                r2Display.textContent = r2.toFixed(3);
+                isTrained = true;
+                setTrainStatus('trained', `✅ 训练完成！共 ${trainingDataSize} 口井，R² = ${trainingR2.toFixed(4)}`);
+                updateUIAfterTrain();
 
-                // 更新散点图
-                const scatterData = yf.map((actual, i) => [actual, allPred[i]]);
-                const chart = chartInstances['scatterChart'];
-                if (chart) {
-                    const option = {
-                        title: {
-                            text: `R² = ${r2.toFixed(3)}  ·  ${yf.length} 口井`,
-                            left: 'center',
-                            top: 0,
-                            textStyle: { fontSize: 14, fontWeight: 600, color: '#1a3a5c' }
-                        },
-                        tooltip: {
-                            trigger: 'item',
-                            formatter: p => `实测: ${p.data[0].toFixed(3)}<br/>预测: ${p.data[1].toFixed(3)}`
-                        },
-                        grid: { left: 60, right: 30, top: 50, bottom: 50 },
-                        xAxis: {
-                            name: '实测 EUR (×10⁶ m³)',
-                            nameStyle: { fontSize: 12, fontWeight: 600 },
-                            scale: true
-                        },
-                        yAxis: {
-                            name: '预测 EUR (×10⁶ m³)',
-                            nameStyle: { fontSize: 12, fontWeight: 600 },
-                            scale: true
-                        },
-                        series: [{
-                            type: 'scatter',
-                            data: scatterData,
-                            symbolSize: 10,
-                            itemStyle: {
-                                color: new echarts.graphic.RadialGradient(0.4, 0.3, 0.5, [
-                                    { offset: 0, color: '#4fc3f7' },
-                                    { offset: 1, color: '#1a7aba' }
-                                ]),
-                                opacity: 0.8,
-                                shadowBlur: 6,
-                                shadowColor: 'rgba(0,0,0,0.1)'
-                            },
-                            markLine: {
-                                data: [{ type: 'average' }],
-                                lineStyle: { color: '#d95f3a', type: 'dashed', width: 2 },
-                                label: {
-                                    formatter: `R² = ${r2.toFixed(3)}`,
-                                    fontSize: 13,
-                                    fontWeight: 700,
-                                    color: '#d95f3a'
-                                }
-                            }
-                        }]
-                    };
-                    chart.setOption(option, true);
-                    chart.resize();
-                }
+                drawScatterPlot(Xf, yf, allPred);
+                drawImportance(featureKeys, data);
+                drawHeatmap(data);
 
-                scatterModeBadge.textContent = isRealData ? '实测数据' : '模拟数据';
-                scatterDataInfo.textContent = isRealData ?
-                    `基于上传的 ${yf.length} 口井 · R² = ${r2.toFixed(3)}` :
-                    `基于模拟数据 · R² = ${r2.toFixed(3)}`;
-
-                // 更新EUR预测结果（用第一口测试井）
-                if (X_test.length > 0) {
-                    const pred = predict(X_test[0]);
-                    const low = Math.round((pred * 0.88) * 100) / 100;
-                    const high = Math.round((pred * 1.16) * 100) / 100;
-                    document.getElementById('eurDisplay').innerHTML = `${pred.toFixed(2)} <small>×10⁶ m³</small>`;
-                    document.getElementById('intervalDisplay').textContent = `[${low.toFixed(2)}, ${high.toFixed(2)}]`;
-                    document.getElementById('modelUsed').textContent = `XGBoost (R²=${r2.toFixed(3)})`;
-                }
-
-                // 特征重要性
-                const impChart = chartInstances['importanceChart'];
-                if (impChart) {
-                    const corrs = featureKeys.map((f, idx) => {
-                        const vals = data.map(row => parseFloat(row[f]) || 0);
-                        const eurVals = data.map(row => parseFloat(row.EUR) || 0);
-                        const vidx = [];
-                        for (let i = 0; i < vals.length; i++) {
-                            if (!isNaN(vals[i]) && !isNaN(eurVals[i])) vidx.push(i);
-                        }
-                        if (vidx.length < 3) return { name: f, value: 0 };
-                        const vv = vidx.map(i => vals[i]);
-                        const ee = vidx.map(i => eurVals[i]);
-                        return { name: f, value: Math.abs(correlation(vv, ee)) };
-                    });
-                    const sorted = corrs.sort((a, b) => b.value - a.value);
-                    const labels = sorted.map(d => FIELD_LABELS[d.name] || d.name);
-                    const values = sorted.map(d => Math.max(0.01, d.value * 0.6 + 0.1));
-
-                    const opt = {
-                        tooltip: { trigger: 'axis', formatter: p => `${p[0].name}<br/>重要性: ${p[0].value.toFixed(3)}` },
-                        grid: { left: 110, right: 30, top: 20, bottom: 30 },
-                        xAxis: { type: 'value', name: '重要性', nameStyle: { fontSize: 11 } },
-                        yAxis: { type: 'category', data: labels, axisLabel: { fontSize: 11 } },
-                        series: [{
-                            type: 'bar',
-                            data: values,
-                            barWidth: '45%',
-                            itemStyle: {
-                                color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
-                                    { offset: 0, color: '#2d8bcb' },
-                                    { offset: 1, color: '#4fc3f7' }
-                                ]),
-                                borderRadius: [0, 6, 6, 0]
-                            },
-                            label: {
-                                show: true,
-                                position: 'right',
-                                fontSize: 10,
-                                fontWeight: 600,
-                                formatter: p => (p.data * 100).toFixed(1) + '%'
-                            }
-                        }]
-                    };
-                    impChart.setOption(opt, true);
-                    impChart.resize();
-                }
-
-                // 热力图
-                const pearChart = chartInstances['pearsonChart'];
-                if (pearChart) {
-                    const topFeatures = ['EUR', 'porosity', 'permeability', 'gas_sat', 'thickness', 'toc',
-                        'brittle', 'fluid_vol', 'proppant', 'stages', 'cluster_dist', 'horizontal_len',
-                        'initial_rate'
-                    ];
-                    const labels = topFeatures.map(f => FIELD_LABELS[f] || f);
-                    const n = topFeatures.length;
-                    const matrix = [];
-                    for (let i = 0; i < n; i++) {
-                        matrix[i] = [];
-                        for (let j = 0; j < n; j++) {
-                            if (i === j) { matrix[i][j] = 1; continue; }
-                            const col1 = data.map(row => parseFloat(row[topFeatures[i]]) || 0);
-                            const col2 = data.map(row => parseFloat(row[topFeatures[j]]) || 0);
-                            const vidx = [];
-                            for (let k = 0; k < col1.length; k++) {
-                                if (!isNaN(col1[k]) && !isNaN(col2[k])) vidx.push(k);
-                            }
-                            if (vidx.length < 3) { matrix[i][j] = 0; continue; }
-                            const v1 = vidx.map(k => col1[k]);
-                            const v2 = vidx.map(k => col2[k]);
-                            matrix[i][j] = correlation(v1, v2);
-                        }
-                    }
-
-                    const seriesData = [];
-                    for (let i = 0; i < n; i++) {
-                        for (let j = 0; j < n; j++) {
-                            seriesData.push([i, j, matrix[i][j]]);
-                        }
-                    }
-
-                    const opt = {
-                        tooltip: {
-                            trigger: 'item',
-                            formatter: p => {
-                                const row = labels[p.data[0]];
-                                const col = labels[p.data[1]];
-                                return `${row} ↔ ${col}<br/>相关系数: ${p.data[2].toFixed(3)}`;
-                            }
-                        },
-                        grid: { left: 80, right: 20, bottom: 80, top: 20 },
-                        xAxis: {
-                            type: 'category',
-                            data: labels,
-                            axisLabel: { rotate: 45, fontSize: 9, interval: 0 },
-                            splitArea: { show: true }
-                        },
-                        yAxis: {
-                            type: 'category',
-                            data: labels,
-                            axisLabel: { fontSize: 9, interval: 0 },
-                            splitArea: { show: true }
-                        },
-                        visualMap: {
-                            min: -1,
-                            max: 1,
-                            inRange: {
-                                color: ['#2c5f7a', '#4a8ab0', '#8fc9e8', '#c8e6f5', '#fffbe6', '#fdd0a2',
-                                    '#f5a06e', '#d95f3a', '#a02a1a'
-                                ]
-                            },
-                            calculable: true,
-                            orient: 'horizontal',
-                            left: 'center',
-                            bottom: 10
-                        },
-                        series: [{
-                            type: 'heatmap',
-                            data: seriesData,
-                            label: {
-                                show: true,
-                                fontSize: 7,
-                                color: '#1a2a3f',
-                                formatter: p => p.data[2].toFixed(2)
-                            },
-                            itemStyle: { borderWidth: 1, borderColor: '#fff' }
-                        }]
-                    };
-                    pearChart.setOption(opt, true);
-                    pearChart.resize();
-                }
+                return true;
             }
 
             // =========================================================
-            // 8. 上传功能
+            // 8. UI 更新函数
+            // =========================================================
+
+            function setTrainStatus(type, msg) {
+                const box = trainStatusBox;
+                const text = trainStatusText;
+                const badge = trainStatusBadge;
+
+                box.className = 'status-box';
+                const iconMap = { idle: '⏳', training: '🔄', trained: '✅', error: '❌' };
+
+                if (type === 'idle') {
+                    box.classList.add('idle');
+                    badge.textContent = '等待数据';
+                    badge.className = 'mode-badge';
+                    text.textContent = msg || '等待上传历史数据（25列完整数据）';
+                } else if (type === 'training') {
+                    box.classList.add('training');
+                    badge.textContent = '训练中...';
+                    badge.className = 'mode-badge';
+                    text.textContent = msg || '模型训练中，请稍候...';
+                } else if (type === 'trained') {
+                    box.classList.add('trained');
+                    badge.textContent = '已训练 ✓';
+                    badge.className = 'mode-badge data-mode';
+                    text.textContent = msg || '模型训练完成！';
+                } else if (type === 'error') {
+                    box.classList.add('error');
+                    badge.textContent = '错误';
+                    badge.className = 'mode-badge';
+                    text.textContent = msg || '训练失败，请检查数据';
+                }
+
+                const icon = box.querySelector('.status-icon');
+                if (icon) icon.textContent = iconMap[type] || '📌';
+            }
+
+            function updateUIAfterTrain() {
+                wellCount.textContent = trainingDataSize;
+                r2Display.textContent = trainingR2.toFixed(3);
+
+                predictBtn.disabled = false;
+                predictInfo.textContent = `✅ 模型已训练 (R²=${trainingR2.toFixed(3)})，可进行预测`;
+                predictStatusBadge.textContent = '可预测 ✓';
+                predictStatusBadge.className = 'mode-badge data-mode';
+
+                scatterModeBadge.textContent = `已训练 R²=${trainingR2.toFixed(3)}`;
+                scatterModeBadge.className = 'mode-badge data-mode';
+
+                modelUsed.textContent = `XGBoost (R²=${trainingR2.toFixed(3)})`;
+
+                eurDisplay.innerHTML = '-- <small>×10⁶ m³</small>';
+                intervalDisplay.textContent = '[--, --]';
+
+                trainBtn.disabled = false;
+                trainBtn.textContent = '🔄 重新训练';
+                trainInfo.textContent = '可重新上传数据训练新模型';
+            }
+
+            // =========================================================
+            // 9. 图表绘制函数
+            // =========================================================
+
+            function drawScatterPlot(Xf, yf, allPred) {
+                const chart = chartInstances['scatterChart'];
+                if (!chart) return;
+
+                const scatterData = yf.map((actual, i) => [actual, allPred[i]]);
+
+                const option = {
+                    title: {
+                        text: `R² = ${trainingR2.toFixed(3)}  ·  ${yf.length} 口井`,
+                        left: 'center',
+                        top: 0,
+                        textStyle: { fontSize: 14, fontWeight: 600, color: '#1a3a5c' }
+                    },
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: p => `实测: ${p.data[0].toFixed(3)}<br/>预测: ${p.data[1].toFixed(3)}`
+                    },
+                    grid: { left: 60, right: 30, top: 50, bottom: 50 },
+                    xAxis: { name: '实测 EUR (×10⁶ m³)', nameStyle: { fontSize: 12, fontWeight: 600 }, scale: true },
+                    yAxis: { name: '预测 EUR (×10⁶ m³)', nameStyle: { fontSize: 12, fontWeight: 600 }, scale: true },
+                    series: [{
+                        type: 'scatter',
+                        data: scatterData,
+                        symbolSize: 10,
+                        itemStyle: {
+                            color: new echarts.graphic.RadialGradient(0.4, 0.3, 0.5, [
+                                { offset: 0, color: '#4fc3f7' },
+                                { offset: 1, color: '#1a7aba' }
+                            ]),
+                            opacity: 0.8,
+                            shadowBlur: 6,
+                            shadowColor: 'rgba(0,0,0,0.1)'
+                        },
+                        markLine: {
+                            data: [{ type: 'average' }],
+                            lineStyle: { color: '#d95f3a', type: 'dashed', width: 2 },
+                            label: {
+                                formatter: `R² = ${trainingR2.toFixed(3)}`,
+                                fontSize: 13,
+                                fontWeight: 700,
+                                color: '#d95f3a'
+                            }
+                        }
+                    }]
+                };
+                chart.setOption(option, true);
+                chart.resize();
+
+                scatterDataInfo.textContent = `基于 ${yf.length} 口训练井 · R² = ${trainingR2.toFixed(3)}`;
+            }
+
+            function drawImportance(featureKeys, data) {
+                const chart = chartInstances['importanceChart'];
+                if (!chart) return;
+
+                const corrs = featureKeys.map((f) => {
+                    const vals = data.map(row => parseFloat(row[f]) || 0);
+                    const eurVals = data.map(row => parseFloat(row.EUR) || 0);
+                    const vidx = [];
+                    for (let i = 0; i < vals.length; i++) {
+                        if (!isNaN(vals[i]) && !isNaN(eurVals[i])) vidx.push(i);
+                    }
+                    if (vidx.length < 3) return { name: f, value: 0 };
+                    const vv = vidx.map(i => vals[i]);
+                    const ee = vidx.map(i => eurVals[i]);
+                    return { name: f, value: Math.abs(correlation(vv, ee)) };
+                });
+                const sorted = corrs.sort((a, b) => b.value - a.value);
+                const labels = sorted.map(d => FIELD_LABELS[d.name] || d.name);
+                const values = sorted.map(d => Math.max(0.01, d.value * 0.6 + 0.1));
+
+                const opt = {
+                    tooltip: { trigger: 'axis', formatter: p => `${p[0].name}<br/>重要性: ${p[0].value.toFixed(3)}` },
+                    grid: { left: 110, right: 30, top: 20, bottom: 30 },
+                    xAxis: { type: 'value', name: '重要性', nameStyle: { fontSize: 11 } },
+                    yAxis: { type: 'category', data: labels, axisLabel: { fontSize: 11 } },
+                    series: [{
+                        type: 'bar',
+                        data: values,
+                        barWidth: '45%',
+                        itemStyle: {
+                            color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+                                { offset: 0, color: '#2d8bcb' },
+                                { offset: 1, color: '#4fc3f7' }
+                            ]),
+                            borderRadius: [0, 6, 6, 0]
+                        },
+                        label: {
+                            show: true,
+                            position: 'right',
+                            fontSize: 10,
+                            fontWeight: 600,
+                            formatter: p => (p.data * 100).toFixed(1) + '%'
+                        }
+                    }]
+                };
+                chart.setOption(opt, true);
+                chart.resize();
+            }
+
+            function drawHeatmap(data) {
+                const chart = chartInstances['pearsonChart'];
+                if (!chart) return;
+
+                const topFeatures = ['EUR', 'porosity', 'permeability', 'gas_sat', 'thickness', 'toc',
+                    'brittle', 'fluid_vol', 'proppant', 'stages', 'cluster_dist', 'horizontal_len',
+                    'initial_rate'
+                ];
+                const labels = topFeatures.map(f => FIELD_LABELS[f] || f);
+                const n = topFeatures.length;
+                const matrix = [];
+                for (let i = 0; i < n; i++) {
+                    matrix[i] = [];
+                    for (let j = 0; j < n; j++) {
+                        if (i === j) { matrix[i][j] = 1; continue; }
+                        const col1 = data.map(row => parseFloat(row[topFeatures[i]]) || 0);
+                        const col2 = data.map(row => parseFloat(row[topFeatures[j]]) || 0);
+                        const vidx = [];
+                        for (let k = 0; k < col1.length; k++) {
+                            if (!isNaN(col1[k]) && !isNaN(col2[k])) vidx.push(k);
+                        }
+                        if (vidx.length < 3) { matrix[i][j] = 0; continue; }
+                        const v1 = vidx.map(k => col1[k]);
+                        const v2 = vidx.map(k => col2[k]);
+                        matrix[i][j] = correlation(v1, v2);
+                    }
+                }
+
+                const seriesData = [];
+                for (let i = 0; i < n; i++) {
+                    for (let j = 0; j < n; j++) {
+                        seriesData.push([i, j, matrix[i][j]]);
+                    }
+                }
+
+                const opt = {
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: p => {
+                            const row = labels[p.data[0]];
+                            const col = labels[p.data[1]];
+                            return `${row} ↔ ${col}<br/>相关系数: ${p.data[2].toFixed(3)}`;
+                        }
+                    },
+                    grid: { left: 80, right: 20, bottom: 80, top: 20 },
+                    xAxis: {
+                        type: 'category',
+                        data: labels,
+                        axisLabel: { rotate: 45, fontSize: 9, interval: 0 },
+                        splitArea: { show: true }
+                    },
+                    yAxis: {
+                        type: 'category',
+                        data: labels,
+                        axisLabel: { fontSize: 9, interval: 0 },
+                        splitArea: { show: true }
+                    },
+                    visualMap: {
+                        min: -1,
+                        max: 1,
+                        inRange: {
+                            color: ['#2c5f7a', '#4a8ab0', '#8fc9e8', '#c8e6f5', '#fffbe6', '#fdd0a2',
+                                '#f5a06e', '#d95f3a', '#a02a1a'
+                            ]
+                        },
+                        calculable: true,
+                        orient: 'horizontal',
+                        left: 'center',
+                        bottom: 10
+                    },
+                    series: [{
+                        type: 'heatmap',
+                        data: seriesData,
+                        label: {
+                            show: true,
+                            fontSize: 7,
+                            color: '#1a2a3f',
+                            formatter: p => p.data[2].toFixed(2)
+                        },
+                        itemStyle: { borderWidth: 1, borderColor: '#fff' }
+                    }]
+                };
+                chart.setOption(opt, true);
+                chart.resize();
+            }
+
+            // =========================================================
+            // 10. 上传功能
             // =========================================================
 
             uploadZone.addEventListener('click', () => fileInput.click());
@@ -1436,36 +1492,25 @@
                         }
 
                         const headers = Object.keys(data[0]);
-                        const missing = REQUIRED_FIELDS.filter(f => !headers.includes(f));
+                        // 检查是否包含所有必需字段（跳过well_name和completion这两个可选文本字段）
+                        const requiredCheck = REQUIRED_FIELDS.filter(f => f !== 'well_name' && f !== 'completion');
+                        const missing = requiredCheck.filter(f => !headers.includes(f));
                         if (missing.length > 0) {
                             uploadStatus.textContent = `⚠️ 缺少字段: ${missing.join(', ')}`;
                             uploadStatus.className = 'upload-status err';
                             return;
                         }
 
-                        // 成功
                         uploadedData = data;
-                        isDataMode = true;
                         uploadStatus.textContent = `✅ ${data.length} 口井加载成功`;
                         uploadStatus.className = 'upload-status ok';
-                        modeBadge.textContent = '数据模式';
-                        modeBadge.className = 'mode-badge data-mode';
-                        dataSourceLabel.textContent = `📤 已上传: ${file.name} (${data.length}口井)`;
+                        dataSourceLabel.textContent = `📤 ${file.name} (${data.length}口井)`;
 
-                        // 禁用手动输入
-                        document.querySelectorAll('#paramGroups input').forEach(inp => inp.disabled = true);
-
-                        // 显示预览
                         showPreview(data, headers);
 
-                        // 自动运行
-                        runBtn.textContent = '🔄 分析中...';
-                        runBtn.disabled = true;
-                        setTimeout(() => {
-                            runBtn.textContent = '🚀 运行完整分析';
-                            runBtn.disabled = false;
-                            runAnalysis();
-                        }, 300);
+                        trainBtn.disabled = false;
+                        trainInfo.textContent = `✅ ${data.length} 口井数据就绪，点击训练模型`;
+                        setTrainStatus('idle', `✅ 已加载 ${data.length} 口井数据，点击「训练模型」开始训练`);
 
                     } catch (err) {
                         uploadStatus.textContent = `⚠️ 解析失败: ${err.message}`;
@@ -1511,29 +1556,98 @@
             }
 
             // =========================================================
-            // 9. 重置功能
+            // 11. 重置功能
             // =========================================================
 
             resetBtn.addEventListener('click', function() {
-                isDataMode = false;
                 uploadedData = null;
-                uploadStatus.textContent = '已重置为手动模式';
+                isTrained = false;
+                trainedModel = null;
+                trainingR2 = 0;
+                trainingDataSize = 0;
+
+                uploadStatus.textContent = '已清除';
                 uploadStatus.className = 'upload-status';
-                modeBadge.textContent = '手动模式';
-                modeBadge.className = 'mode-badge';
-                dataSourceLabel.textContent = '手动输入';
+                dataSourceLabel.textContent = '请上传历史数据（25列）';
                 previewContainer.classList.add('hidden');
-                document.querySelectorAll('#paramGroups input').forEach(inp => inp.disabled = false);
                 fileInput.value = '';
-                runBtn.textContent = '🚀 运行完整分析';
-                runBtn.disabled = false;
-                analysisInfo.textContent = '手动模式 · 使用当前参数';
-                // 重新生成模拟数据并分析
-                setTimeout(runAnalysis, 200);
+
+                trainBtn.disabled = true;
+                trainBtn.textContent = '🧠 训练模型';
+                trainInfo.textContent = '上传25列完整数据后启用';
+                predictBtn.disabled = true;
+                predictInfo.textContent = '请先训练模型';
+                predictStatusBadge.textContent = '等待模型';
+                predictStatusBadge.className = 'mode-badge warning-mode';
+
+                wellCount.textContent = '0';
+                r2Display.textContent = '--';
+                eurDisplay.innerHTML = '-- <small>×10⁶ m³</small>';
+                intervalDisplay.textContent = '[--, --]';
+                modelUsed.textContent = '未训练';
+
+                scatterModeBadge.textContent = '等待训练';
+                scatterModeBadge.className = 'mode-badge';
+                scatterDataInfo.textContent = '模型训练后显示';
+
+                setTrainStatus('idle', '等待上传历史数据（25列完整数据）');
+
+                Object.keys(chartInstances).forEach(key => {
+                    const chart = chartInstances[key];
+                    if (chart) {
+                        chart.clear();
+                        chart.resize();
+                    }
+                });
             });
 
             // =========================================================
-            // 10. 初始化
+            // 12. 训练与预测按钮事件
+            // =========================================================
+
+            trainBtn.addEventListener('click', function() {
+                if (!uploadedData) {
+                    setTrainStatus('error', '请先上传数据文件');
+                    return;
+                }
+                trainBtn.disabled = true;
+                trainBtn.textContent = '⏳ 训练中...';
+                setTrainStatus('training', '模型训练中，请稍候...');
+
+                setTimeout(() => {
+                    const success = trainModel(uploadedData);
+                    trainBtn.disabled = false;
+                    if (success) {
+                        trainBtn.textContent = '🔄 重新训练';
+                    } else {
+                        trainBtn.textContent = '🧠 训练模型';
+                    }
+                }, 100);
+            });
+
+            predictBtn.addEventListener('click', function() {
+                if (!isTrained || !trainedModel) {
+                    predictInfo.textContent = '⚠️ 请先训练模型';
+                    return;
+                }
+
+                const params = getParamValues();
+                const featureKeys = trainedModel.featureKeys || [];
+                const features = featureKeys.map(k => params[k] || 0);
+
+                const pred = predictEUR(features, trainedModel);
+                const low = Math.round((pred * 0.88) * 100) / 100;
+                const high = Math.round((pred * 1.16) * 100) / 100;
+
+                eurDisplay.innerHTML = `${pred.toFixed(2)} <small>×10⁶ m³</small>`;
+                intervalDisplay.textContent = `[${low.toFixed(2)}, ${high.toFixed(2)}]`;
+                modelUsed.textContent = `XGBoost (R²=${trainingR2.toFixed(3)})`;
+
+                predictInfo.textContent = `✅ 预测完成！EUR = ${pred.toFixed(2)} × 10⁶ m³`;
+            });
+
+            // =========================================================
+            // 13. 初始化
             // =========================================================
 
             function init() {
@@ -1542,12 +1656,10 @@
                 renderCompareTable();
                 initCharts();
 
-                // 首次运行（手动模式）
-                setTimeout(runAnalysis, 500);
+                setTrainStatus('idle', '等待上传历史数据（25列完整数据）');
+                predictBtn.disabled = true;
+                predictInfo.textContent = '请先训练模型';
 
-                runBtn.addEventListener('click', runAnalysis);
-
-                // 窗口自适应
                 let resizeTimer;
                 window.addEventListener('resize', function() {
                     clearTimeout(resizeTimer);
@@ -1565,6 +1677,5 @@
 
         })();
     </script>
-
 </body>
 </html>
