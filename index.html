@@ -9,7 +9,6 @@
     <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js">
     </script>
     <style>
-        /* ===== 全局样式 ===== */
         * {
             margin: 0;
             padding: 0;
@@ -27,7 +26,6 @@
             --radius: 20px;
             --radius-sm: 12px;
             --accent: #1a7aba;
-            --accent-light: #d4e8fc;
             --gradient: linear-gradient(135deg, #0b2b44, #1a6a9e);
             --font: 'Segoe UI', 'PingFang SC', Roboto, system-ui, sans-serif;
             --color-success: #1a7a3a;
@@ -517,9 +515,6 @@
         .mt-1 {
             margin-top: 0.8rem;
         }
-        .mt-2 {
-            margin-top: 1.8rem;
-        }
         .flex-center {
             display: flex;
             justify-content: center;
@@ -627,7 +622,7 @@
     <nav class="navbar">
         <div class="logo">
             ⛰️ AI · EUR 研究平台
-            <span>v2.4</span>
+            <span>v2.5</span>
         </div>
         <ul class="nav-links">
             <li>📊 总览</li>
@@ -645,14 +640,14 @@
                 <div class="sub">
                     <span>🔬 页岩气 · 致密气 · 煤层气</span>
                     <span>🤖 12 种 AI 模型对比</span>
-                    <span>📈 25 维特征工程</span>
+                    <span>📈 24 维特征工程</span>
                     <span>📤 支持数据上传</span>
                 </div>
             </div>
             <div class="hero-stats">
                 <div class="stat"><div class="num" id="wellCount">0</div><div class="label">训练井数</div></div>
                 <div class="stat"><div class="num">12</div><div class="label">AI 模型</div></div>
-                <div class="stat"><div class="num">25</div><div class="label">输入参数</div></div>
+                <div class="stat"><div class="num">24</div><div class="label">输入参数</div></div>
                 <div class="stat"><div class="num" id="r2Display">--</div><div class="label">模型 R²</div></div>
             </div>
         </div>
@@ -669,7 +664,7 @@
                 <span>📤</span> 第一步：模型训练
                 <span class="mode-badge" id="trainStatusBadge">等待数据</span>
                 <span style="margin-left:auto; font-size:0.8rem; font-weight:400; color:var(--text-muted);">
-                    <span id="dataSourceLabel">请上传历史数据（25列）</span>
+                    <span id="dataSourceLabel">请上传历史数据（24列）</span>
                 </span>
             </div>
 
@@ -679,7 +674,7 @@
                     <div class="hint">
                         <strong>点击上传</strong> 或拖拽 Excel / CSV 文件
                     </div>
-                    <div class="formats">支持 .xlsx · .xls · .csv（25列完整数据）</div>
+                    <div class="formats">支持 .xlsx · .xls · .csv（24列完整数据）</div>
                 </div>
                 <div id="uploadStatus" class="upload-status">未上传</div>
                 <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" />
@@ -701,14 +696,14 @@
 
             <div class="status-box idle" id="trainStatusBox">
                 <span class="status-icon">⏳</span>
-                <span id="trainStatusText">等待上传历史数据（含 EUR 及25个参数）</span>
+                <span id="trainStatusText">等待上传历史数据（含 EUR 及23个参数）</span>
             </div>
 
             <div class="flex-center mt-1">
                 <button class="btn btn-success" id="trainBtn" disabled>
                     🧠 训练模型
                 </button>
-                <span class="text-muted" id="trainInfo">上传25列完整数据后启用</span>
+                <span class="text-muted" id="trainInfo">上传24列完整数据后启用</span>
             </div>
         </div>
 
@@ -781,7 +776,7 @@
 
         <div class="footer">
             <p>🧪 基于AI的非常规气井EUR预测技术研究 · 专业分析平台</p>
-            <p style="font-size:0.75rem; margin-top:0.2rem;">流程：上传25列历史数据训练模型 → 输入新井25个参数预测 EUR</p>
+            <p style="font-size:0.75rem; margin-top:0.2rem;">流程：上传24列历史数据训练模型 → 输入新井24个参数预测 EUR</p>
         </div>
 
     </div>
@@ -791,7 +786,7 @@
             'use strict';
 
             // =========================================================
-            // 1. 数据定义 - 25个特征
+            // 1. 数据定义
             // =========================================================
 
             const MODELS = [
@@ -821,7 +816,7 @@
                     适用: '特征相关性高，需平衡', r2: 0.74, rmse: 0.64, mae: 0.49, mape: 12.8 }
             ];
 
-            // 25个参数 - 与手动输入完全一致
+            // 24个参数
             const PARAM_GROUPS = [{
                 group: '地质参数',
                 params: [
@@ -857,18 +852,17 @@
             }, {
                 group: '井筒参数',
                 params: [
-                    { key: 'horizontal_len', label: '水平段长度', unit: 'm', default: 1200 },
                     { key: 'well_diameter', label: '井径', unit: 'mm', default: 152.4 },
-                    { key: 'completion', label: '完井方式', unit: '', default: '桥塞射孔' }
+                    { key: 'horizontal_len', label: '水平段长度', unit: 'm', default: 1200 }
                 ]
             }];
 
-            // 25个特征的完整列表
+            // 24个特征的完整列表
             const ALL_FEATURES = [
                 'EUR', 'porosity', 'permeability', 'gas_sat', 'thickness', 'toc', 'ro', 'clay', 'brittle',
                 'fluid_vol', 'proppant', 'stages', 'cluster_dist', 'cluster_scale', 'injection_rate',
                 'treat_pressure', 'flowback', 'initial_rate', 'prod_days', 'bhp', 'casing_pressure',
-                'completion', 'well_diameter', 'horizontal_len', 'well_name'
+                'well_diameter', 'horizontal_len'
             ];
 
             const REQUIRED_FIELDS = ALL_FEATURES;
@@ -895,10 +889,8 @@
                 prod_days: '生产天数',
                 bhp: '井底流压',
                 casing_pressure: '套压',
-                completion: '完井方式',
                 well_diameter: '井径',
-                horizontal_len: '水平段长',
-                well_name: '井号'
+                horizontal_len: '水平段长'
             };
 
             // =========================================================
@@ -1056,7 +1048,7 @@
             }
 
             // =========================================================
-            // 7. 模型训练引擎（使用25个特征）
+            // 7. 模型训练引擎
             // =========================================================
 
             function trainModel(data) {
@@ -1065,15 +1057,13 @@
                     return false;
                 }
 
-                // 提取特征（排除EUR、completion、well_name等非数值字段）
-                const excludeKeys = ['EUR', 'completion', 'well_name'];
+                const excludeKeys = ['EUR'];
                 const featureKeys = ALL_FEATURES.filter(f => !excludeKeys.includes(f) && data[0].hasOwnProperty(f));
                 featureNames = featureKeys.map(f => FIELD_LABELS[f] || f);
 
                 const allX = data.map(row => featureKeys.map(f => parseFloat(row[f]) || 0));
                 const allY = data.map(row => parseFloat(row.EUR) || 0);
 
-                // 过滤有效数据
                 const valid = [];
                 for (let i = 0; i < allY.length; i++) {
                     if (!isNaN(allY[i]) && allY[i] > 0 && allX[i].every(v => !isNaN(v) && v >= 0)) {
@@ -1089,7 +1079,6 @@
                 const yf = valid.map(i => allY[i]);
                 trainingDataSize = yf.length;
 
-                // 计算特征权重
                 const weights = featureKeys.map((f, idx) => {
                     const vals = data.map(row => parseFloat(row[f]) || 0);
                     const eurVals = data.map(row => parseFloat(row.EUR) || 0);
@@ -1112,7 +1101,6 @@
                     dataSize: trainingDataSize
                 };
 
-                // 计算训练 R²
                 const allPred = Xf.map(row => predictEUR(row, trainedModel));
                 const meanY = yf.reduce((a, b) => a + b, 0) / yf.length;
                 let ssTot = 0,
@@ -1150,7 +1138,7 @@
                     box.classList.add('idle');
                     badge.textContent = '等待数据';
                     badge.className = 'mode-badge';
-                    text.textContent = msg || '等待上传历史数据（25列完整数据）';
+                    text.textContent = msg || '等待上传历史数据（24列完整数据）';
                 } else if (type === 'training') {
                     box.classList.add('training');
                     badge.textContent = '训练中...';
@@ -1442,8 +1430,7 @@
                         }
 
                         const headers = Object.keys(data[0]);
-                        const requiredCheck = REQUIRED_FIELDS.filter(f => f !== 'well_name' && f !== 'completion');
-                        const missing = requiredCheck.filter(f => !headers.includes(f));
+                        const missing = REQUIRED_FIELDS.filter(f => !headers.includes(f));
                         if (missing.length > 0) {
                             uploadStatus.textContent = `⚠️ 缺少字段: ${missing.join(', ')}`;
                             uploadStatus.className = 'upload-status err';
@@ -1517,13 +1504,13 @@
 
                 uploadStatus.textContent = '已清除';
                 uploadStatus.className = 'upload-status';
-                dataSourceLabel.textContent = '请上传历史数据（25列）';
+                dataSourceLabel.textContent = '请上传历史数据（24列）';
                 previewContainer.classList.add('hidden');
                 fileInput.value = '';
 
                 trainBtn.disabled = true;
                 trainBtn.textContent = '🧠 训练模型';
-                trainInfo.textContent = '上传25列完整数据后启用';
+                trainInfo.textContent = '上传24列完整数据后启用';
                 predictBtn.disabled = true;
                 predictInfo.textContent = '请先训练模型';
                 predictStatusBadge.textContent = '等待模型';
@@ -1539,7 +1526,7 @@
                 scatterModeBadge.className = 'mode-badge';
                 scatterDataInfo.textContent = '模型训练后显示';
 
-                setTrainStatus('idle', '等待上传历史数据（25列完整数据）');
+                setTrainStatus('idle', '等待上传历史数据（24列完整数据）');
 
                 Object.keys(chartInstances).forEach(key => {
                     const chart = chartInstances[key];
@@ -1605,7 +1592,7 @@
                 renderCompareTable();
                 initCharts();
 
-                setTrainStatus('idle', '等待上传历史数据（25列完整数据）');
+                setTrainStatus('idle', '等待上传历史数据（24列完整数据）');
                 predictBtn.disabled = true;
                 predictInfo.textContent = '请先训练模型';
 
