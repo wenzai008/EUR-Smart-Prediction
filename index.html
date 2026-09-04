@@ -640,7 +640,7 @@
                 <div class="sub">
                     <span>🔬 页岩气 · 致密气 · 煤层气</span>
                     <span>🤖 12 种 AI 模型对比</span>
-                    <span>📈 24 维特征工程</span>
+                    <span>📈 特征工程</span>
                     <span>📤 支持数据上传</span>
                 </div>
             </div>
@@ -664,7 +664,7 @@
                 <span>📤</span> 第一步：模型训练
                 <span class="mode-badge" id="trainStatusBadge">等待数据</span>
                 <span style="margin-left:auto; font-size:0.8rem; font-weight:400; color:var(--text-muted);">
-                    <span id="dataSourceLabel">请上传历史数据（24列）</span>
+                    <span id="dataSourceLabel">请上传历史数据</span>
                 </span>
             </div>
 
@@ -674,7 +674,7 @@
                     <div class="hint">
                         <strong>点击上传</strong> 或拖拽 Excel / CSV 文件
                     </div>
-                    <div class="formats">支持 .xlsx · .xls · .csv（24列完整数据）</div>
+                    <div class="formats">支持 .xlsx · .xls · .csv</div>
                 </div>
                 <div id="uploadStatus" class="upload-status">未上传</div>
                 <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" />
@@ -696,14 +696,14 @@
 
             <div class="status-box idle" id="trainStatusBox">
                 <span class="status-icon">⏳</span>
-                <span id="trainStatusText">等待上传历史数据（含 EUR 及23个参数）</span>
+                <span id="trainStatusText">等待上传历史数据</span>
             </div>
 
             <div class="flex-center mt-1">
                 <button class="btn btn-success" id="trainBtn" disabled>
                     🧠 训练模型
                 </button>
-                <span class="text-muted" id="trainInfo">上传24列完整数据后启用</span>
+                <span class="text-muted" id="trainInfo"></span>
             </div>
         </div>
 
@@ -776,7 +776,7 @@
 
         <div class="footer">
             <p>🧪 基于AI的非常规气井EUR预测技术研究 · 专业分析平台</p>
-            <p style="font-size:0.75rem; margin-top:0.2rem;">流程：上传24列历史数据训练模型 → 输入新井24个参数预测 EUR</p>
+            <p style="font-size:0.75rem; margin-top:0.2rem;">流程：上传历史数据训练模型 → 输入新井参数预测 EUR</p>
         </div>
 
     </div>
@@ -816,7 +816,7 @@
                     适用: '特征相关性高，需平衡', r2: 0.74, rmse: 0.64, mae: 0.49, mape: 12.8 }
             ];
 
-            // 24个参数
+            // 参数
             const PARAM_GROUPS = [{
                 group: '地质参数',
                 params: [
@@ -857,7 +857,7 @@
                 ]
             }];
 
-            // 24个特征的完整列表
+            // 特征完整列表
             const ALL_FEATURES = [
                 'EUR', 'porosity', 'permeability', 'gas_sat', 'thickness', 'toc', 'ro', 'clay', 'brittle',
                 'fluid_vol', 'proppant', 'stages', 'cluster_dist', 'cluster_scale', 'injection_rate',
@@ -1138,7 +1138,7 @@
                     box.classList.add('idle');
                     badge.textContent = '等待数据';
                     badge.className = 'mode-badge';
-                    text.textContent = msg || '等待上传历史数据（24列完整数据）';
+                    text.textContent = msg || '等待上传历史数据';
                 } else if (type === 'training') {
                     box.classList.add('training');
                     badge.textContent = '训练中...';
@@ -1504,13 +1504,13 @@
 
                 uploadStatus.textContent = '已清除';
                 uploadStatus.className = 'upload-status';
-                dataSourceLabel.textContent = '请上传历史数据（24列）';
+                dataSourceLabel.textContent = '请上传历史数据';
                 previewContainer.classList.add('hidden');
                 fileInput.value = '';
 
                 trainBtn.disabled = true;
                 trainBtn.textContent = '🧠 训练模型';
-                trainInfo.textContent = '上传24列完整数据后启用';
+                trainInfo.textContent = '上传完整数据后启用';
                 predictBtn.disabled = true;
                 predictInfo.textContent = '请先训练模型';
                 predictStatusBadge.textContent = '等待模型';
@@ -1526,7 +1526,7 @@
                 scatterModeBadge.className = 'mode-badge';
                 scatterDataInfo.textContent = '模型训练后显示';
 
-                setTrainStatus('idle', '等待上传历史数据（24列完整数据）');
+                setTrainStatus('idle', '等待上传历史数据');
 
                 Object.keys(chartInstances).forEach(key => {
                     const chart = chartInstances[key];
@@ -1592,7 +1592,7 @@
                 renderCompareTable();
                 initCharts();
 
-                setTrainStatus('idle', '等待上传历史数据（24列完整数据）');
+                setTrainStatus('idle', '等待上传历史数据');
                 predictBtn.disabled = true;
                 predictInfo.textContent = '请先训练模型';
 
