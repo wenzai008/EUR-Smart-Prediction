@@ -10,7 +10,7 @@
     <!-- SheetJS for Excel parsing -->
     <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js">
     </script>
-    <!-- ml.js 机器学习库 (纯JavaScript，无需加载Python) -->
+    <!-- ml.js 机器学习库 -->
     <script src="https://cdn.jsdelivr.net/npm/ml-regression@2.0.0/lib/index.umd.js">
     </script>
     <script src="https://cdn.jsdelivr.net/npm/ml-random-forest@2.0.0/lib/index.umd.js">
@@ -20,7 +20,6 @@
     <script src="https://cdn.jsdelivr.net/npm/ml-svm@2.0.0/lib/index.umd.js">
     </script>
     <style>
-        /* ===== 全局样式 ===== */
         * {
             margin: 0;
             padding: 0;
@@ -42,6 +41,7 @@
             --font: 'Segoe UI', 'PingFang SC', Roboto, system-ui, sans-serif;
             --color-success: #1a7a3a;
             --color-danger: #c0392b;
+            --color-warning: #f39c12;
         }
         html {
             scroll-behavior: smooth;
@@ -191,7 +191,7 @@
             color: #fff;
         }
         .card-title .mode-badge.warning-mode {
-            background: #f39c12;
+            background: var(--color-warning);
             color: #fff;
         }
         .grid-2 {
@@ -203,6 +203,11 @@
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 1.8rem;
+        }
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
         }
         .model-card {
             background: #fafdff;
@@ -411,6 +416,15 @@
         .btn-secondary:hover {
             background: #d4e8fc;
         }
+        .btn-warning {
+            background: var(--color-warning);
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(243, 156, 18, 0.3);
+        }
+        .btn-warning:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 28px rgba(243, 156, 18, 0.45);
+        }
         .result-panel {
             background: #f8fcff;
             border-radius: var(--radius-sm);
@@ -527,6 +541,9 @@
         .mt-1 {
             margin-top: 0.8rem;
         }
+        .mt-2 {
+            margin-top: 1.8rem;
+        }
         .flex-center {
             display: flex;
             justify-content: center;
@@ -544,6 +561,12 @@
         .text-muted {
             color: var(--text-muted);
             font-size: 0.85rem;
+        }
+        .text-success {
+            color: var(--color-success);
+        }
+        .text-danger {
+            color: var(--color-danger);
         }
         .badge-pill {
             background: #eaf3fd;
@@ -597,11 +620,53 @@
         .model-compare-table .best-row td:first-child::before {
             content: "🏆 ";
         }
+        .data-summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 0.6rem;
+            margin-top: 0.6rem;
+        }
+        .data-summary-item {
+            background: #f8fcff;
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+            border: 1px solid #e2ecf7;
+            text-align: center;
+        }
+        .data-summary-item .value {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+        }
+        .data-summary-item .label {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .missing-tag {
+            display: inline-block;
+            font-size: 0.6rem;
+            font-weight: 600;
+            padding: 0.05rem 0.5rem;
+            border-radius: 40px;
+        }
+        .missing-tag.ok {
+            background: #e6f5e6;
+            color: #1a7a3a;
+        }
+        .missing-tag.warn {
+            background: #fde8e8;
+            color: #c0392b;
+        }
         @media (max-width: 1024px) {
             .grid-2 {
                 grid-template-columns: 1fr;
             }
             .grid-3 {
+                grid-template-columns: 1fr 1fr;
+            }
+            .grid-4 {
                 grid-template-columns: 1fr 1fr;
             }
         }
@@ -628,6 +693,9 @@
                 font-size: 1.3rem;
             }
             .grid-3 {
+                grid-template-columns: 1fr;
+            }
+            .grid-4 {
                 grid-template-columns: 1fr;
             }
             .navbar {
@@ -659,6 +727,9 @@
                 padding: 1rem;
                 gap: 0.6rem;
             }
+            .data-summary-grid {
+                grid-template-columns: 1fr 1fr;
+            }
         }
     </style>
 </head>
@@ -668,7 +739,7 @@
     <nav class="navbar">
         <div class="logo">
             ⛰️ AI · EUR 研究平台
-            <span>v3.2 · 6种模型</span>
+            <span>v3.3</span>
         </div>
         <ul class="nav-links">
             <li>📊 总览</li>
@@ -685,14 +756,14 @@
                 <h1>基于AI的非常规气井EUR预测</h1>
                 <div class="sub">
                     <span>🔬 页岩气 · 致密气 · 煤层气</span>
-                    <span>🤖 6 种模型自动对比</span>
+                    <span>🤖 多种模型自动对比</span>
                     <span>📈 多维特征工程</span>
                     <span>⚡ 即开即用 · 无需等待</span>
                 </div>
             </div>
             <div class="hero-stats">
                 <div class="stat"><div class="num" id="wellCount">0</div><div class="label">训练井数</div></div>
-                <div class="stat"><div class="num">6</div><div class="label">AI 模型</div></div>
+                <div class="stat"><div class="num">多种</div><div class="label">AI 模型</div></div>
                 <div class="stat"><div class="num" id="featureCount">--</div><div class="label">使用特征数</div></div>
                 <div class="stat"><div class="num" id="r2Display">--</div><div class="label">最优 R²</div></div>
             </div>
@@ -700,14 +771,14 @@
 
         <!-- 模型库 -->
         <div class="card">
-            <div class="card-title"><span>🧠</span> 6 种 AI 模型 · 自动对比选优</div>
+            <div class="card-title"><span>🧠</span> 多种 AI 模型 · 自动对比选优</div>
             <div class="grid-3" id="modelCardsContainer"></div>
         </div>
 
-        <!-- 训练区 -->
+        <!-- 数据处理+训练区 -->
         <div class="card" style="border-left: 4px solid #1a7aba;">
             <div class="card-title">
-                <span>📤</span> 第一步：模型训练
+                <span>📤</span> 数据上传与处理
                 <span class="mode-badge" id="trainStatusBadge">等待数据</span>
                 <span style="margin-left:auto; font-size:0.8rem; font-weight:400; color:var(--text-muted);">
                     <span id="dataSourceLabel">请上传历史数据</span>
@@ -727,6 +798,7 @@
                 <button class="btn-secondary" id="resetDataBtn" type="button">↺ 清除数据</button>
             </div>
 
+            <!-- 数据预览 -->
             <div id="previewContainer" class="hidden">
                 <div class="flex-between">
                     <span style="font-weight:600; color:var(--text-secondary);">📊 数据预览</span>
@@ -738,6 +810,16 @@
                         <tbody id="previewBody"></tbody>
                     </table>
                 </div>
+            </div>
+
+            <!-- 数据处理结果 -->
+            <div id="dataProcessResult" class="hidden mt-1">
+                <div class="flex-between">
+                    <span style="font-weight:600; color:var(--text-secondary);">🔍 数据质量报告</span>
+                    <span id="dataQualityBadge" class="badge-pill">检测中</span>
+                </div>
+                <div class="data-summary-grid" id="dataSummaryGrid"></div>
+                <div class="mt-1" id="missingInfo"></div>
             </div>
 
             <div class="status-box idle" id="trainStatusBox">
@@ -753,6 +835,9 @@
                 <button class="btn btn-success" id="trainBtn" disabled>
                     🧠 训练模型
                 </button>
+                <button class="btn btn-warning" id="processBtn" disabled>
+                    🔍 数据诊断
+                </button>
                 <span class="text-muted" id="trainInfo">上传数据后启用</span>
             </div>
         </div>
@@ -760,7 +845,7 @@
         <!-- 预测区 -->
         <div class="card" style="border-left: 4px solid #f39c12;">
             <div class="card-title">
-                <span>🎯</span> 第二步：EUR 预测
+                <span>🎯</span> EUR 预测
                 <span class="mode-badge warning-mode" id="predictStatusBadge">等待模型</span>
             </div>
 
@@ -804,7 +889,7 @@
         <!-- 模型对比表 -->
         <div class="card">
             <div class="card-title">
-                <span>📋</span> 6 种模型性能对比
+                <span>📋</span> 模型性能对比
                 <span class="mode-badge" id="compareBadge">自动选优</span>
             </div>
             <div class="table-wrap">
@@ -841,7 +926,7 @@
 
         <div class="footer">
             <p>🧪 基于AI的非常规气井EUR预测技术研究 · 专业分析平台</p>
-            <p style="font-size:0.75rem; margin-top:0.2rem;">6 种模型自动对比选优 · 纯 JavaScript 实现 · 即开即用</p>
+            <p style="font-size:0.75rem; margin-top:0.2rem;">多种模型自动对比选优 · 纯 JavaScript 实现 · 即开即用</p>
         </div>
 
     </div>
@@ -890,14 +975,14 @@
                 horizontal_len: '水平段长'
             };
 
-            // 6种模型定义（ml.js 支持的）
+            // 模型定义（去掉"回归"字样）
             const MODEL_DEFS = [
-                { id: 'LinearRegression', name: '线性回归', desc: '最小二乘线性拟合，可解释最强', tags: ['可解释', '基线', '线性'] },
-                { id: 'Ridge', name: '岭回归', desc: 'L2正则化，处理多重共线性', tags: ['L2正则', '稳定系数', '共线性'] },
-                { id: 'Lasso', name: 'LASSO回归', desc: 'L1正则化，自动特征选择', tags: ['L1正则', '特征选择', '稀疏'] },
+                { id: 'LinearRegression', name: '线性模型', desc: '最小二乘拟合，可解释性强', tags: ['可解释', '基线', '线性'] },
+                { id: 'Ridge', name: '岭模型', desc: 'L2正则化，处理多重共线性', tags: ['L2正则', '稳定', '共线性'] },
+                { id: 'Lasso', name: 'LASSO模型', desc: 'L1正则化，自动特征选择', tags: ['L1正则', '特征选择', '稀疏'] },
                 { id: 'RandomForest', name: '随机森林', desc: '多棵决策树集成，Bagging策略', tags: ['可解释', '抗过拟合', '非线性'] },
-                { id: 'SVR', name: '支持向量回归', desc: '核函数映射高维，间隔最大化', tags: ['泛化强', '核函数', '小样本'] },
-                { id: 'KNN', name: 'K近邻回归', desc: '基于特征空间距离的局部回归', tags: ['简单', '无训练', '局部模式'] }
+                { id: 'SVR', name: '支持向量机', desc: '核函数映射高维，间隔最大化', tags: ['泛化强', '核函数', '小样本'] },
+                { id: 'KNN', name: 'K近邻', desc: '基于特征空间距离的局部预测', tags: ['简单', '无训练', '局部模式'] }
             ];
 
             let uploadedData = null;
@@ -926,6 +1011,7 @@
             const r2Display = document.getElementById('r2Display');
             const featureCountDisplay = document.getElementById('featureCount');
             const trainBtn = document.getElementById('trainBtn');
+            const processBtn = document.getElementById('processBtn');
             const predictBtn = document.getElementById('predictBtn');
             const resetBtn = document.getElementById('resetDataBtn');
             const trainStatusBadge = document.getElementById('trainStatusBadge');
@@ -943,6 +1029,10 @@
             const progressFill = document.getElementById('progressFill');
             const modelCompareBody = document.getElementById('modelCompareBody');
             const compareBadge = document.getElementById('compareBadge');
+            const dataProcessResult = document.getElementById('dataProcessResult');
+            const dataSummaryGrid = document.getElementById('dataSummaryGrid');
+            const dataQualityBadge = document.getElementById('dataQualityBadge');
+            const missingInfo = document.getElementById('missingInfo');
 
             let chartInstances = {};
 
@@ -1036,7 +1126,119 @@
             }
 
             // =========================================================
-            // 4. 工具函数
+            // 4. 数据处理功能
+            // =========================================================
+
+            function analyzeData(data) {
+                if (!data || data.length === 0) return null;
+
+                const headers = Object.keys(data[0]);
+                const numericHeaders = headers.filter(h => {
+                    const val = parseFloat(data[0][h]);
+                    return !isNaN(val) && typeof data[0][h] !== 'string';
+                });
+
+                const result = {
+                    totalRows: data.length,
+                    totalCols: headers.length,
+                    numericCols: numericHeaders.length,
+                    missingStats: {},
+                    outliers: {},
+                    summary: {}
+                };
+
+                let totalMissing = 0;
+                let totalCells = data.length * headers.length;
+
+                for (const h of headers) {
+                    let missing = 0;
+                    const vals = [];
+                    for (const row of data) {
+                        const v = row[h];
+                        if (v === undefined || v === null || v === '' || v === 'NaN') {
+                            missing++;
+                        } else if (typeof v === 'number' && isNaN(v)) {
+                            missing++;
+                        } else {
+                            vals.push(parseFloat(v) || 0);
+                        }
+                    }
+                    result.missingStats[h] = { missing, total: data.length, pct: (missing / data.length * 100) };
+                    totalMissing += missing;
+
+                    // 数值列统计
+                    if (numericHeaders.includes(h) && vals.length > 0) {
+                        const sorted = vals.slice().sort((a, b) => a - b);
+                        const mean = vals.reduce((a, b) => a + b, 0) / vals.length;
+                        const median = sorted[Math.floor(sorted.length / 2)];
+                        const min = sorted[0];
+                        const max = sorted[sorted.length - 1];
+                        const q1 = sorted[Math.floor(sorted.length * 0.25)];
+                        const q3 = sorted[Math.floor(sorted.length * 0.75)];
+                        const iqr = q3 - q1;
+                        const lowerBound = q1 - 1.5 * iqr;
+                        const upperBound = q3 + 1.5 * iqr;
+                        const outliers = vals.filter(v => v < lowerBound || v > upperBound);
+                        result.outliers[h] = { count: outliers.length, pct: (outliers.length / vals.length * 100) };
+                        result.summary[h] = { mean, median, min, max, q1, q3, count: vals.length };
+                    }
+                }
+
+                result.missingPct = totalMissing / totalCells * 100;
+                result.totalMissing = totalMissing;
+
+                return result;
+            }
+
+            function renderDataSummary(result) {
+                if (!result) return;
+
+                dataProcessResult.classList.remove('hidden');
+
+                // 统计卡片
+                let html = `
+                    <div class="data-summary-item"><div class="value">${result.totalRows}</div><div class="label">总井数</div></div>
+                    <div class="data-summary-item"><div class="value">${result.totalCols}</div><div class="label">总列数</div></div>
+                    <div class="data-summary-item"><div class="value">${result.numericCols}</div><div class="label">数值列</div></div>
+                    <div class="data-summary-item"><div class="value">${result.missingPct.toFixed(1)}%</div><div class="label">缺失率</div></div>
+                `;
+                dataSummaryGrid.innerHTML = html;
+
+                // 质量标签
+                if (result.missingPct < 5 && result.totalRows >= 10) {
+                    dataQualityBadge.textContent = '✅ 数据质量良好';
+                    dataQualityBadge.style.background = '#e6f5e6';
+                    dataQualityBadge.style.color = '#1a7a3a';
+                } else if (result.missingPct < 20 && result.totalRows >= 5) {
+                    dataQualityBadge.textContent = '⚠️ 数据质量一般';
+                    dataQualityBadge.style.background = '#fef9e7';
+                    dataQualityBadge.style.color = '#b7950b';
+                } else {
+                    dataQualityBadge.textContent = '❌ 数据质量较差';
+                    dataQualityBadge.style.background = '#fde8e8';
+                    dataQualityBadge.style.color = '#c0392b';
+                }
+
+                // 缺失详情
+                let missingHtml = '<div style="font-size:0.78rem;color:var(--text-muted);">';
+                let hasMissing = false;
+                for (const [key, val] of Object.entries(result.missingStats)) {
+                    if (val.missing > 0) {
+                        hasMissing = true;
+                        const label = FIELD_LABELS[key] || key;
+                        missingHtml +=
+                            `<span class="missing-tag warn">⚠️ ${label}: ${val.missing}个缺失 (${val.pct.toFixed(1)}%)</span> `;
+                    }
+                }
+                if (!hasMissing) {
+                    missingHtml += '<span class="missing-tag ok">✅ 所有列无缺失值</span>';
+                }
+                missingHtml += '</div>';
+                missingInfo.innerHTML = missingHtml;
+            }
+
+            // =========================================================
+            // 5. 工具函数
             // =========================================================
 
             function getParamValues() {
@@ -1093,7 +1295,7 @@
             }
 
             // =========================================================
-            // 5. 训练模型（使用 ml.js）
+            // 6. 训练模型
             // =========================================================
 
             function trainAllModels(data) {
@@ -1104,6 +1306,11 @@
 
                 const excludeKeys = ['EUR'];
                 let featureKeys = ALL_FEATURES.filter(f => !excludeKeys.includes(f) && data[0].hasOwnProperty(f));
+
+                if (featureKeys.length === 0) {
+                    setTrainStatus('error', '未找到有效的特征列');
+                    return false;
+                }
 
                 // 自动选择最相关的10个特征
                 if (featureKeys.length > 10) {
@@ -1168,14 +1375,13 @@
 
                 progressFill.style.width = '20%';
                 progressFill.textContent = '20%';
-                setTrainStatus('training', '🔄 正在训练 6 种模型...');
+                setTrainStatus('training', '🔄 正在训练多种模型...');
 
                 const results = {};
                 yActual = yf;
                 let bestR2 = -Infinity;
                 bestModelId = null;
 
-                // 训练每种模型
                 for (const m of MODEL_DEFS) {
                     let yPred;
                     let success = true;
@@ -1222,7 +1428,6 @@
                     }
                 }
 
-                // 如果没有找到正R²的模型，选R²最高的
                 if (bestModelId === null) {
                     for (const [id, r] of Object.entries(results)) {
                         if (r.r2 > bestR2) {
@@ -1263,7 +1468,6 @@
                     }
                 }
 
-                // 更新对比表
                 updateCompareTable(results);
 
                 progressFill.style.width = '100%';
@@ -1275,12 +1479,10 @@
                 );
                 updateUIAfterTrain();
 
-                // 绘制散点图
                 if (bestModelId && trainedModels[bestModelId] && trainedModels[bestModelId].yPred) {
                     drawScatterPlot(yf, trainedModels[bestModelId].yPred);
                 }
 
-                // 绘制特征重要性（基于随机森林或线性模型系数）
                 drawImportance(featureKeys, data);
                 drawHeatmap(data);
 
@@ -1288,21 +1490,17 @@
             }
 
             // =========================================================
-            // 6. 各模型训练函数 (ml.js)
+            // 7. 各模型训练函数
             // =========================================================
 
             function trainLinearRegression(X, y) {
-                // 使用最小二乘法：y = X * w
                 const n = X.length;
                 const d = X[0].length;
-                // 添加偏置项
                 const Xb = X.map(row => [1, ...row]);
-                // 正规方程: w = (X^T X)^(-1) X^T y
                 const XtX = matrixMultiply(transpose(Xb), Xb);
                 const XtX_inv = matrixInverse(XtX);
                 const XtY = matrixMultiply(transpose(Xb), y.map(v => [v]));
                 const w = matrixMultiply(XtX_inv, XtY);
-                // 预测
                 const yPred = Xb.map(row => {
                     let sum = 0;
                     for (let i = 0; i < row.length; i++) {
@@ -1319,7 +1517,6 @@
                 const alpha = 0.5;
                 const Xb = X.map(row => [1, ...row]);
                 const XtX = matrixMultiply(transpose(Xb), Xb);
-                // 添加L2正则
                 for (let i = 0; i < XtX.length; i++) {
                     XtX[i][i] += alpha;
                 }
@@ -1337,14 +1534,12 @@
             }
 
             function trainLasso(X, y) {
-                // LASSO使用坐标下降近似
                 const n = X.length;
                 const d = X[0].length;
                 const alpha = 0.01;
                 const maxIter = 500;
                 let w = new Array(d).fill(0);
                 let bias = y.reduce((a, b) => a + b, 0) / y.length;
-                const yMean = bias;
                 for (let iter = 0; iter < maxIter; iter++) {
                     for (let j = 0; j < d; j++) {
                         let residual = 0;
@@ -1457,13 +1652,9 @@
             }
 
             function trainSVR(X, y) {
-                // SVR简化版：使用RBF核的近似
                 const n = X.length;
                 const d = X[0].length;
                 const gamma = 1 / d;
-                const C = 1.0;
-                const epsilon = 0.1;
-                // 随机选择支撑向量（简化）
                 const nSV = Math.min(10, n);
                 const svIndices = [];
                 const used = new Set();
@@ -1475,7 +1666,6 @@
                 }
                 const svX = svIndices.map(i => X[i]);
                 const svY = svIndices.map(i => y[i]);
-                // 使用RBF核进行预测
                 const yPred = X.map(row => {
                     let num = 0,
                         den = 0;
@@ -1587,7 +1777,7 @@
             }
 
             // =========================================================
-            // 7. UI 更新
+            // 8. UI 更新
             // =========================================================
 
             function setTrainStatus(type, msg) {
@@ -1670,7 +1860,7 @@
             }
 
             // =========================================================
-            // 8. 预测
+            // 9. 预测
             // =========================================================
 
             function predictWithBestModel() {
@@ -1682,18 +1872,15 @@
                 const params = getParamValues();
                 const features = featureKeysUsed.map(k => params[k] || 0);
 
-                // 使用最优模型的预测
                 const bestResult = trainedModels[bestModelId];
                 if (!bestResult || !bestResult.yPred || bestResult.yPred.length === 0) {
                     predictInfo.textContent = '⚠️ 模型数据不完整';
                     return;
                 }
 
-                // 基于训练数据预测新样本
                 const yMean = bestResult.yPred.reduce((a, b) => a + b, 0) / bestResult.yPred.length;
                 let pred = yMean;
 
-                // 如果有特征重要性，加权预测
                 if (featureKeysUsed.length > 0) {
                     let weightSum = 0;
                     let weightedPred = 0;
@@ -1719,7 +1906,7 @@
             }
 
             // =========================================================
-            // 9. 图表绘制
+            // 10. 图表绘制
             // =========================================================
 
             function drawScatterPlot(actual, pred) {
@@ -1765,7 +1952,6 @@
             function drawImportance(featureKeys, data) {
                 const chart = chartInstances['importanceChart'];
                 if (!chart) return;
-                // 计算特征与EUR的相关性作为重要性
                 const eurVals = data.map(row => parseFloat(row.EUR) || 0);
                 const importance = featureKeys.map(f => {
                     const vals = data.map(row => parseFloat(row[f]) || 0);
@@ -1859,7 +2045,7 @@
             }
 
             // =========================================================
-            // 10. 上传功能
+            // 11. 上传功能
             // =========================================================
 
             uploadZone.addEventListener('click', () => fileInput.click());
@@ -1922,8 +2108,16 @@
                         dataSourceLabel.textContent = `📤 ${file.name} (${data.length}口井)`;
                         showPreview(data, headers);
                         trainBtn.disabled = false;
-                        trainInfo.textContent = `✅ ${data.length} 口井数据就绪，点击训练模型`;
+                        processBtn.disabled = false;
+                        trainInfo.textContent = `✅ ${data.length} 口井数据就绪，点击训练模型或数据诊断`;
                         setTrainStatus('idle', `✅ 已加载 ${data.length} 口井数据，点击「训练模型」开始训练`);
+
+                        // 自动执行数据诊断
+                        setTimeout(() => {
+                            const analysis = analyzeData(data);
+                            if (analysis) renderDataSummary(analysis);
+                        }, 200);
+
                     } catch (err) {
                         uploadStatus.textContent = `⚠️ 解析失败: ${err.message}`;
                         uploadStatus.className = 'upload-status err';
@@ -1967,7 +2161,7 @@
             }
 
             // =========================================================
-            // 11. 重置
+            // 12. 重置
             // =========================================================
 
             resetBtn.addEventListener('click', function() {
@@ -1982,8 +2176,10 @@
                 uploadStatus.className = 'upload-status';
                 dataSourceLabel.textContent = '请上传历史数据';
                 previewContainer.classList.add('hidden');
+                dataProcessResult.classList.add('hidden');
                 fileInput.value = '';
                 trainBtn.disabled = true;
+                processBtn.disabled = true;
                 trainBtn.textContent = '🧠 训练模型';
                 trainInfo.textContent = '上传数据后启用';
                 predictBtn.disabled = true;
@@ -2024,7 +2220,7 @@
             });
 
             // =========================================================
-            // 12. 按钮事件
+            // 13. 按钮事件
             // =========================================================
 
             trainBtn.addEventListener('click', function() {
@@ -2048,6 +2244,17 @@
                 }, 100);
             });
 
+            processBtn.addEventListener('click', function() {
+                if (!uploadedData) {
+                    uploadStatus.textContent = '⚠️ 请先上传数据';
+                    return;
+                }
+                const analysis = analyzeData(uploadedData);
+                if (analysis) renderDataSummary(analysis);
+                uploadStatus.textContent = '✅ 数据诊断完成';
+                uploadStatus.className = 'upload-status ok';
+            });
+
             predictBtn.addEventListener('click', function() {
                 if (!isTrained || !trainedModels || !bestModelId) {
                     predictInfo.textContent = '⚠️ 请先训练模型';
@@ -2057,7 +2264,7 @@
             });
 
             // =========================================================
-            // 13. 初始化
+            // 14. 初始化
             // =========================================================
 
             function init() {
@@ -2067,6 +2274,7 @@
                 setTrainStatus('idle', '⏳ 准备就绪，请上传数据开始训练');
                 predictBtn.disabled = true;
                 predictInfo.textContent = '请先训练模型';
+                processBtn.disabled = true;
                 let resizeTimer;
                 window.addEventListener('resize', function() {
                     clearTimeout(resizeTimer);
